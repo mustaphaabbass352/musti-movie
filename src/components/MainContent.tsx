@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Row from "@/components/Row";
@@ -30,10 +30,28 @@ const MainContent = ({
   const [selectedMovie, setSelectedMovie] = useState<any>(null);
   const [searchResults, setSearchResults] = useState<any[] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [watchHistory, setWatchHistory] = useState<any[]>([]);
+
+  // Load watch history from localStorage on mount
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('musti-watch-history');
+    if (savedHistory) {
+      setWatchHistory(JSON.parse(savedHistory));
+    }
+  }, []);
 
   const handleMovieClick = (movie: any) => {
     setSelectedMovie(movie);
     setShowModal(true);
+
+    // Update watch history
+    setWatchHistory((prev) => {
+      // Remove movie if it already exists to move it to the front
+      const filtered = prev.filter((m) => m.id !== movie.id);
+      const newHistory = [movie, ...filtered].slice(0, 20); // Keep last 20 movies
+      localStorage.setItem('musti-watch-history', JSON.stringify(newHistory));
+      return newHistory;
+    });
   };
 
   const handleSearch = async (query: string) => {
@@ -103,6 +121,9 @@ const MainContent = ({
             <Hero movie={heroMovie} onPlayClick={() => handleMovieClick(heroMovie)} />
             
             <section className="md:space-y-24 -mt-16 lg:-mt-32 relative z-10">
+              {watchHistory.length > 0 && (
+                <Row title="Continue Watching" movies={watchHistory} onMovieClick={handleMovieClick} />
+              )}
               <Row title="Trending Now" movies={trendingNow} onMovieClick={handleMovieClick} />
               <Row title="Top Rated" movies={topRated} onMovieClick={handleMovieClick} />
               <Row title="Action Thrillers" movies={actionMovies} onMovieClick={handleMovieClick} />
