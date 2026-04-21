@@ -1,7 +1,5 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import Row from "@/components/Row";
 import requests from "@/utils/requests";
+import MainContent from "@/components/MainContent";
 
 export default async function Home() {
   const [
@@ -33,24 +31,15 @@ export default async function Home() {
     );
   }
 
-  const heroMovie = trendingNow.results[Math.floor(Math.random() * trendingNow.results.length)];
-
   return (
-    <div className="relative h-screen bg-[#141414] lg:h-[140vh]">
-      <Navbar />
-      <main className="relative pb-24 lg:space-y-24">
-        <Hero movie={heroMovie} />
-        
-        <section className="md:space-y-24">
-          <Row title="Trending Now" movies={trendingNow.results} />
-          <Row title="Top Rated" movies={topRated.results} />
-          <Row title="Action Thrillers" movies={actionMovies.results} />
-          <Row title="Comedies" movies={comedyMovies.results} />
-          <Row title="Scary Movies" movies={horrorMovies.results} />
-          <Row title="Romance" movies={romanceMovies.results} />
-          <Row title="Documentaries" movies={documentaries.results} />
-        </section>
-      </main>
-    </div>
+    <MainContent 
+      trendingNow={trendingNow.results}
+      topRated={topRated.results}
+      actionMovies={actionMovies.results}
+      comedyMovies={comedyMovies.results}
+      horrorMovies={horrorMovies.results}
+      romanceMovies={romanceMovies.results}
+      documentaries={documentaries.results}
+    />
   );
 }

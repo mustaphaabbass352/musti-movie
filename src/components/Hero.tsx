@@ -3,13 +3,15 @@
 import { Play, Info } from 'lucide-react';
 
 interface Movie {
+  id: number;
   title?: string;
   name?: string;
   overview: string;
   backdrop_path: string;
+  media_type?: string;
 }
 
-const Hero = ({ movie }: { movie: Movie }) => {
+const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void }) => {
   return (
     <div className="relative h-[95vh] w-full flex flex-col space-y-2 py-16 md:space-y-4 lg:h-[140vh] lg:justify-end lg:pb-12">
       <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
@@ -30,7 +32,10 @@ const Hero = ({ movie }: { movie: Movie }) => {
         </p>
 
         <div className="flex space-x-3">
-          <button className="flex items-center gap-x-2 rounded bg-white px-5 py-1.5 text-sm font-semibold text-black transition hover:bg-gray-200 md:px-8 md:py-2.5 md:text-xl">
+          <button 
+            onClick={onPlayClick}
+            className="flex items-center gap-x-2 rounded bg-white px-5 py-1.5 text-sm font-semibold text-black transition hover:bg-gray-200 md:px-8 md:py-2.5 md:text-xl"
+          >
             <Play className="h-4 w-4 fill-black text-black md:h-7 md:w-7" />
             Play
           </button>
