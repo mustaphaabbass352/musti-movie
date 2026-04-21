@@ -132,10 +132,14 @@
 
         function updateIframe() {
             const iframe = document.getElementById('video-iframe');
-            // Use the most stable provider
-            const url = `https://vidsrc.xyz/embed/${currentMediaType}/${currentMovieId}`;
+            // Use vidsrc.to for better compatibility
+            const url = `https://vidsrc.to/embed/${currentMediaType}/${currentMovieId}`;
 
             iframe.src = url;
+            
+            // Add extra permissions and no-referrer
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+            iframe.setAttribute('referrerpolicy', 'no-referrer');
             
             // Re-apply sandbox for security
             iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-presentation');
