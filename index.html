@@ -132,8 +132,13 @@
 
         function updateIframe() {
             const iframe = document.getElementById('video-iframe');
-            // Use vidsrc.xyz for maximum reliability
-            const url = `https://vidsrc.xyz/embed/${currentMediaType}/${currentMovieId}`;
+            
+            // TMDB movies often don't have media_type unless it's a multi search.
+            // If it has 'title', it's a movie. If it has 'name', it's a TV show.
+            const type = currentMediaType || (document.getElementById('hero-title').innerText ? 'movie' : 'tv');
+            
+            // Use vidsrc.cc for better compatibility
+            const url = `https://vidsrc.cc/v2/embed/${type}/${currentMovieId}`;
 
             iframe.src = url;
             
@@ -141,8 +146,8 @@
             iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
             iframe.setAttribute('referrerpolicy', 'no-referrer');
             
-            // Re-apply sandbox with necessary permissions
-            iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-presentation');
+            // Remove sandbox for maximum compatibility on static hosting
+            iframe.removeAttribute('sandbox');
         }
 
         function closePlayer() {
