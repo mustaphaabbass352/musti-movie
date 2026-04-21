@@ -8,11 +8,10 @@
   --background-end-rgb: 20, 20, 20;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+@layer base {
+  body {
+    @apply bg-[#141414] text-white overflow-x-hidden font-sans;
+  }
 }
 
 @layer components {
