@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musti Movie - Simple Version</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            background-color: #141414; 
+            color: white; 
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .movie-card:hover { 
+            transform: scale(1.05); 
+            transition: transform 0.3s ease; 
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent">
+        <div class="flex items-center space-x-10">
+            <h1 class="text-3xl font-bold text-red-600 tracking-tighter cursor-pointer" onclick="location.reload()">MUSTI</h1>
+            <div class="space-x-6 text-sm font-light hidden md:flex">
+                <a href="#" class="hover:text-gray-300">Home</a>
+                <a href="#" class="hover:text-gray-300">Movies</a>
+                <a href="#" class="hover:text-gray-300">TV Shows</a>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="flex items-center bg-black/40 border border-gray-500 rounded-full px-4 py-1.5 focus-within:border-white transition-all">
+            <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Search movies..." 
+                class="bg-transparent border-none outline-none text-sm w-32 md:w-64 placeholder-gray-400"
+                onkeyup="if(event.key === 'Enter') searchMovies()"
+            >
+            <button onclick="searchMovies()" class="ml-2 hover:scale-110 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Search Results Section (Hidden by default) -->
+    <div id="search-results-section" class="hidden p-10 pt-32 min-h-screen bg-[#141414]">
+        <div class="flex justify-between items-center mb-8">
+            <h3 id="search-query-title" class="text-2xl font-semibold text-gray-100"></h3>
+            <button onclick="closeSearch()" class="text-gray-400 hover:text-white flex items-center">
+                <span class="mr-2">Back to Home</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div id="search-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            <!-- Search results will be injected here -->
+        </div>
+    </div>
+
+    <!-- Main Content Container (Hidden when searching) -->
+    <div id="main-content">
+        <!-- Hero Section -->
+    <div id="hero" class="relative h-[80vh] flex items-end p-10 bg-cover bg-center transition-opacity duration-1000">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/20"></div>
+        <div class="relative z-10 max-w-2xl space-y-4">
+            <h2 id="hero-title" class="text-4xl md:text-6xl font-bold"></h2>
+            <p id="hero-overview" class="text-sm md:text-lg text-gray-200 line-clamp-3"></p>
+            <div class="flex space-x-3">
+                <button id="hero-play-btn" class="bg-white text-black px-8 py-2 rounded font-bold hover:bg-gray-200 transition">Play</button>
+                <button class="bg-gray-500/70 text-white px-8 py-2 rounded font-bold hover:bg-gray-500/50 transition">More Info</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Rows -->
+    <div class="p-10 space-y-12">
+        <section>
+            <h3 class="text-2xl mb-6 font-semibold text-gray-100">Trending Now</h3>
+            <div id="trending-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
+                <!-- Movies will be injected here -->
+            </div>
+        </section>
+
+        <section>
+            <h3 class="text-2xl mb-6 font-semibold text-gray-100">Top Rated</h3>
+            <div id="top-rated-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
+                <!-- Movies will be injected here -->
+            </div>
+        </section>
+    </div>
+    </div> <!-- End of main-content -->
+
+    <!-- Video Player Modal -->
+    <div id="player-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-4">
+        <div class="absolute top-6 right-6 flex items-center space-x-4 z-[110]">
+            <!-- Provider Switcher -->
+            <div class="bg-gray-800 rounded-lg p-1 flex items-center border border-gray-600">
+                <span class="text-[10px] text-gray-400 px-2 uppercase font-bold">Server</span>
+                <select id="provider-select" onchange="switchProvider()" class="bg-transparent text-white text-xs outline-none cursor-pointer border-l border-gray-600 pl-2 pr-1 py-1">
+                    <option value="vidsrc.xyz">Server 1 (Default)</option>
+                    <option value="vidsrc.to">Server 2 (Fast)</option>
+                    <option value="vidsrc.me">Server 3 (Arabic Support 🌟)</option>
+                    <option value="vidsrc.cc">Server 4 (Ultimate Library 🌍)</option>
+                    <option value="embed.su">Server 5 (Stable)</option>
+                    <option value="vidsrc.pro">Server 6 (Backup)</option>
+                </select>
+            </div>
+            <button onclick="closePlayer()" class="text-white text-4xl hover:text-red-600 transition">&times;</button>
+        </div>
+        <div class="w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl relative">
+            <iframe id="video-iframe" src="" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Using the API Key you provided
+        const API_KEY = 'd8c7480fda6456d4e63823d156aa1cab';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+        const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
+
+        let currentMovieId = null;
+        let currentMediaType = 'movie';
+
+        function playMovie(id, type = 'movie') {
+            currentMovieId = id;
+            currentMediaType = type;
+            const modal = document.getElementById('player-modal');
+            const provider = document.getElementById('provider-select').value;
+            
+            updateIframe(provider);
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateIframe(provider) {
+            const iframe = document.getElementById('video-iframe');
+            let url = '';
+            
+            if (provider === 'vidsrc.xyz') url = `https://vidsrc.xyz/embed/${currentMediaType}/${currentMovieId}`;
+            else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${currentMediaType}/${currentMovieId}`;
+            else if (provider === 'vidsrc.me') url = `https://vidsrc.me/embed/${currentMediaType}?tmdb=${currentMovieId}`;
+            else if (provider === 'vidsrc.cc') url = `https://vidsrc.cc/v2/embed/${currentMediaType}/${currentMovieId}`;
+            else if (provider === 'embed.su') url = `https://embed.su/embed/${currentMediaType}/${currentMovieId}`;
+            else if (provider === 'vidsrc.pro') url = `https://vidsrc.pro/embed/${currentMediaType}/${currentMovieId}`;
+
+            iframe.src = url;
+            
+            // Re-apply sandbox for security
+            iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation');
+        }
+
+        function switchProvider() {
+            const provider = document.getElementById('provider-select').value;
+            updateIframe(provider);
+        }
+
+        function closePlayer() {
+            const modal = document.getElementById('player-modal');
+            const iframe = document.getElementById('video-iframe');
+            iframe.src = '';
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            currentMovieId = null;
+        }
+
+        async function fetchMovies(endpoint) {
+            try {
+                const res = await fetch(`${BASE_URL}${endpoint}?api_key=${API_KEY}&language=en-US`);
+                const data = await res.json();
+                return data.results;
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+                return [];
+            }
+        }
+
+        async function searchMovies() {
+            const query = document.getElementById('search-input').value;
+            if (!query) return;
+
+            try {
+                const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                const results = data.results.filter(m => m.poster_path || m.backdrop_path);
+
+                // UI Changes
+                document.getElementById('main-content').classList.add('hidden');
+                const resultsSection = document.getElementById('search-results-section');
+                resultsSection.classList.remove('hidden');
+                document.getElementById('search-query-title').innerText = `Results for: "${query}"`;
+
+                const grid = document.getElementById('search-grid');
+                grid.innerHTML = ''; // Clear previous results
+
+                results.forEach(movie => {
+                    const card = createMovieCard(movie);
+                    if (card) {
+                        // For search results, we use a vertical poster style
+                        card.className = 'movie-card cursor-pointer transform hover:scale-105 transition duration-300';
+                        card.innerHTML = `
+                            <div class="relative group">
+                                <img src="${IMG_URL + movie.poster_path}" class="rounded shadow-xl w-full h-auto" alt="${movie.title || movie.name}">
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm font-medium text-gray-300 text-center truncate">${movie.title || movie.name}</p>
+                        `;
+                        grid.appendChild(card);
+                    }
+                });
+                
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.error('Error searching movies:', error);
+            }
+        }
+
+        function closeSearch() {
+            document.getElementById('search-results-section').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('search-input').value = '';
+        }
+
+        function createMovieCard(movie) {
+            const card = document.createElement('div');
+            card.className = 'movie-card flex-none w-[200px] md:w-[280px] cursor-pointer';
+            
+            const imagePath = movie.backdrop_path || movie.poster_path;
+            if (!imagePath) return null;
+
+            const mediaType = movie.media_type || 'movie';
+            card.onclick = () => playMovie(movie.id, mediaType);
+
+            card.innerHTML = `
+                <img src="${IMG_URL + imagePath}" class="rounded shadow-lg w-full h-auto" alt="${movie.title || movie.name}">
+                <p class="mt-2 text-xs md:text-sm font-medium text-gray-300 truncate">${movie.title || movie.name}</p>
+            `;
+            return card;
+        }
+
+        async function init() {
+            // Fetch data
+            const trending = await fetchMovies('/trending/all/week');
+            const topRated = await fetchMovies('/movie/top_rated');
+
+            // Setup Hero
+            if (trending.length > 0) {
+                const heroMovie = trending[Math.floor(Math.random() * trending.length)];
+                const heroEl = document.getElementById('hero');
+                heroEl.style.backgroundImage = `url(${BACKDROP_URL + heroMovie.backdrop_path})`;
+                document.getElementById('hero-title').innerText = heroMovie.title || heroMovie.name;
+                document.getElementById('hero-overview').innerText = heroMovie.overview;
+
+                // Setup Play button
+                const playBtn = document.getElementById('hero-play-btn');
+                const mediaType = heroMovie.media_type || 'movie';
+                playBtn.onclick = () => playMovie(heroMovie.id, mediaType);
+            }
+
+            // Fill Trending Grid
+            const trendingGrid = document.getElementById('trending-grid');
+            trending.forEach(movie => {
+                const card = createMovieCard(movie);
+                if (card) trendingGrid.appendChild(card);
+            });
+
+            // Fill Top Rated Grid
+            const topRatedGrid = document.getElementById('top-rated-grid');
+            topRated.forEach(movie => {
+                const card = createMovieCard(movie);
+                if (card) topRatedGrid.appendChild(card);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
