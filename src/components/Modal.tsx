@@ -15,8 +15,8 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const mediaType = movie?.media_type || 'movie';
   const movieId = movie?.id;
 
-  // 2embed is currently the most reliable provider for static GitHub Pages sites
-  const url = `https://www.2embed.cc/embed/${movieId}`;
+  // Use vidsrc.xyz as the primary reliable source
+  const url = `https://vidsrc.xyz/embed/${mediaType}/${movieId}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
@@ -37,6 +37,7 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
           allowFullScreen
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
           referrerPolicy="no-referrer"
+          sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-presentation"
         ></iframe>
       </div>
     </div>

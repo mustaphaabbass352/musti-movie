@@ -132,8 +132,8 @@
 
         function updateIframe() {
             const iframe = document.getElementById('video-iframe');
-            // Use 2embed for maximum compatibility
-            const url = `https://www.2embed.cc/embed/${currentMovieId}`;
+            // Use vidsrc.xyz for maximum reliability
+            const url = `https://vidsrc.xyz/embed/${currentMediaType}/${currentMovieId}`;
 
             iframe.src = url;
             
@@ -141,8 +141,8 @@
             iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
             iframe.setAttribute('referrerpolicy', 'no-referrer');
             
-            // Remove sandbox for 2embed compatibility as it handles its own security
-            iframe.removeAttribute('sandbox');
+            // Re-apply sandbox with necessary permissions
+            iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-presentation');
         }
 
         function closePlayer() {
