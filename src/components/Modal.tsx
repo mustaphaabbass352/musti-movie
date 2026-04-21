@@ -15,15 +15,15 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const mediaType = movie?.media_type || 'movie';
   const movieId = movie?.id;
 
-  // Use vidsrc.to as it's more stable on GitHub Pages
-  const url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
+  // vidsrc.me is often more reliable on static hosting like GitHub Pages
+  const url = `https://vidsrc.me/embed/${mediaType}?tmdb=${movieId}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
       <div className="absolute top-6 right-6 z-50">
         <button 
           onClick={() => setShowModal(false)}
-          className="text-white hover:text-red-600 transition"
+          className="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full"
         >
           <X className="h-8 w-8" />
         </button>

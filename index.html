@@ -132,8 +132,8 @@
 
         function updateIframe() {
             const iframe = document.getElementById('video-iframe');
-            // Use vidsrc.to for better compatibility
-            const url = `https://vidsrc.to/embed/${currentMediaType}/${currentMovieId}`;
+            // Use vidsrc.me for better compatibility on static hosting
+            const url = `https://vidsrc.me/embed/${currentMediaType}?tmdb=${currentMovieId}`;
 
             iframe.src = url;
             
