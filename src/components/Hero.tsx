@@ -15,19 +15,22 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
   if (!movie) return null;
 
   return (
-    <div className="relative h-[95vh] w-full flex flex-col justify-center py-16 md:space-y-4 lg:h-[140vh] lg:justify-end lg:pb-32">
-      <div className="absolute top-0 left-0 -z-10 h-[100vh] w-full lg:h-[140vh]">
+    <div className="relative h-[95vh] w-full flex flex-col justify-center lg:h-[140vh] lg:justify-end lg:pb-32">
+      {/* Background Image Container */}
+      <div className="absolute top-0 left-0 h-full w-full">
         <img
           src={`https://image.tmdb.org/t/p/original${movie?.backdrop_path || movie?.poster_path}`}
           alt="Hero"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#141414]/80 via-transparent to-transparent" />
+        {/* Gradients to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-transparent to-transparent" />
       </div>
 
-      <div className="px-4 lg:px-16 space-y-6 pb-12">
-        <h1 className="text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase">
+      {/* Content Container */}
+      <div className="relative z-10 px-4 lg:px-16 space-y-6 pb-12">
+        <h1 className="text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase text-white shadow-sm">
           {movie?.title || movie?.name}
         </h1>
         <p className="max-w-xs text-sm text-shadow-md md:max-w-lg md:text-xl lg:max-w-3xl lg:text-2xl line-clamp-3 text-gray-200 font-medium">
