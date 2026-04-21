@@ -12,12 +12,11 @@ interface Props {
 const Modal = ({ showModal, setShowModal, movie }: Props) => {
   if (!showModal || !movie) return null;
 
-  // TMDB movies often don't have media_type unless it's a multi search.
-  // If it has 'title', it's a movie. If it has 'name', it's a TV show.
+  // Exact same logic as index.html
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  // vidsrc.in is currently one of the most reliable mirrors
+  // Exact same URL as the working index.html
   const url = `https://vidsrc.in/embed/${mediaType}/${movieId}`;
 
   return (
