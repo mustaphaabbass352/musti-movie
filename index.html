@@ -101,19 +101,7 @@
 
     <!-- Video Player Modal -->
     <div id="player-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-4">
-        <div class="absolute top-6 right-6 flex items-center space-x-4 z-[110]">
-            <!-- Provider Switcher -->
-            <div class="bg-gray-800 rounded-lg p-1 flex items-center border border-gray-600">
-                <span class="text-[10px] text-gray-400 px-2 uppercase font-bold">Server</span>
-                <select id="provider-select" onchange="switchProvider()" class="bg-transparent text-white text-xs outline-none cursor-pointer border-l border-gray-600 pl-2 pr-1 py-1">
-                    <option value="vidsrc.xyz">Server 1 (Default)</option>
-                    <option value="vidsrc.to">Server 2 (Fast)</option>
-                    <option value="vidsrc.me">Server 3 (Arabic Support 🌟)</option>
-                    <option value="vidsrc.cc">Server 4 (Ultimate Library 🌍)</option>
-                    <option value="embed.su">Server 5 (Stable)</option>
-                    <option value="vidsrc.pro">Server 6 (Backup)</option>
-                </select>
-            </div>
+        <div class="absolute top-6 right-6 z-[110]">
             <button onclick="closePlayer()" class="text-white text-4xl hover:text-red-600 transition">&times;</button>
         </div>
         <div class="w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl relative">
@@ -135,34 +123,22 @@
             currentMovieId = id;
             currentMediaType = type;
             const modal = document.getElementById('player-modal');
-            const provider = document.getElementById('provider-select').value;
             
-            updateIframe(provider);
+            updateIframe();
             
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
 
-        function updateIframe(provider) {
+        function updateIframe() {
             const iframe = document.getElementById('video-iframe');
-            let url = '';
-            
-            if (provider === 'vidsrc.xyz') url = `https://vidsrc.xyz/embed/${currentMediaType}/${currentMovieId}`;
-            else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${currentMediaType}/${currentMovieId}`;
-            else if (provider === 'vidsrc.me') url = `https://vidsrc.me/embed/${currentMediaType}?tmdb=${currentMovieId}`;
-            else if (provider === 'vidsrc.cc') url = `https://vidsrc.cc/v2/embed/${currentMediaType}/${currentMovieId}`;
-            else if (provider === 'embed.su') url = `https://embed.su/embed/${currentMediaType}/${currentMovieId}`;
-            else if (provider === 'vidsrc.pro') url = `https://vidsrc.pro/embed/${currentMediaType}/${currentMovieId}`;
+            // Use the most stable provider
+            const url = `https://vidsrc.xyz/embed/${currentMediaType}/${currentMovieId}`;
 
             iframe.src = url;
             
             // Re-apply sandbox for security
             iframe.setAttribute('sandbox', 'allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation allow-popups allow-presentation');
-        }
-
-        function switchProvider() {
-            const provider = document.getElementById('provider-select').value;
-            updateIframe(provider);
         }
 
         function closePlayer() {
