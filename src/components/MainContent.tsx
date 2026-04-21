@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
+import { Play } from 'lucide-react';
 
 interface Props {
   trendingNow: any[];
