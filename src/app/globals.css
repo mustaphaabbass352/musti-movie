@@ -1,16 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 20, 20, 20;
-  --background-end-rgb: 20, 20, 20;
-}
-
 @layer base {
   body {
-    @apply bg-[#141414] text-white overflow-x-hidden font-sans;
+    @apply bg-[#141414] text-white overflow-x-hidden;
+    font-family: 'Inter', sans-serif;
   }
 }
 
