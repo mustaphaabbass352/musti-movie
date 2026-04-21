@@ -17,8 +17,8 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  // Switch to vidsrc.to with standard embed path
-  const url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
+  // vidsrc.in is currently one of the most reliable mirrors
+  const url = `https://vidsrc.in/embed/${mediaType}/${movieId}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
@@ -38,6 +38,7 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
           frameBorder="0" 
           allowFullScreen
           allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+          sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
         ></iframe>
       </div>
     </div>
