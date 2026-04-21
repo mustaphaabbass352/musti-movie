@@ -3,8 +3,13 @@
 import { Search, Bell, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const Navbar = () => {
+interface Props {
+  onSearch: (query: string) => void;
+}
+
+const Navbar = ({ onSearch }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +27,11 @@ const Navbar = () => {
     };
   }, []);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch(query);
+  };
+
   return (
     <nav className={`fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4 transition-all lg:px-16 lg:py-6 ${isScrolled ? 'bg-[#141414]' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
       <div className="flex items-center space-x-2 md:space-x-10">
@@ -34,14 +44,18 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center space-x-6">
-        <div className="flex items-center bg-black/40 border border-gray-500 rounded-full px-4 py-1.5 focus-within:border-white transition-all">
+        <form onSubmit={handleSearch} className="flex items-center bg-black/40 border border-gray-500 rounded-full px-4 py-1.5 focus-within:border-white transition-all">
           <input 
             type="text" 
             placeholder="Search movies..." 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             className="bg-transparent border-none outline-none text-xs md:text-sm w-24 md:w-48 text-white placeholder-gray-400"
           />
-          <Search className="h-4 w-4 text-gray-400 cursor-pointer" />
-        </div>
+          <button type="submit">
+            <Search className="h-4 w-4 text-gray-400 cursor-pointer" />
+          </button>
+        </form>
       </div>
     </nav>
   );
