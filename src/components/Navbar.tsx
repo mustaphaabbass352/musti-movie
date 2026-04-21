@@ -42,14 +42,6 @@ const Navbar = () => {
           />
           <Search className="h-4 w-4 text-gray-400 cursor-pointer" />
         </div>
-        
-        <div className="hidden md:flex items-center space-x-4 text-sm font-light">
-          <p className="cursor-pointer hover:text-gray-300">Kids</p>
-          <Bell className="h-5 w-5 cursor-pointer hover:text-gray-300" />
-          <div className="h-6 w-6 cursor-pointer rounded bg-gray-500 flex items-center justify-center hover:bg-gray-400">
-            <User className="h-4 w-4" />
-          </div>
-        </div>
       </div>
     </nav>
   );
