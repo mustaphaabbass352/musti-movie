@@ -137,16 +137,16 @@
             // If it has 'title', it's a movie. If it has 'name', it's a TV show.
             const type = currentMediaType || (document.getElementById('hero-title').innerText ? 'movie' : 'tv');
             
-            // Use vidsrc.cc for better compatibility
-            const url = `https://vidsrc.cc/v2/embed/${type}/${currentMovieId}`;
+            // Use vidsrc.to for maximum compatibility
+            const url = `https://vidsrc.to/embed/${type}/${currentMovieId}`;
 
             iframe.src = url;
             
-            // Permissions and no-referrer
-            iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
-            iframe.setAttribute('referrerpolicy', 'no-referrer');
+            // Simplified permissions
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; gyroscope; picture-in-picture');
             
-            // Remove sandbox for maximum compatibility on static hosting
+            // Remove everything else for maximum compatibility
+            iframe.removeAttribute('referrerpolicy');
             iframe.removeAttribute('sandbox');
         }
 

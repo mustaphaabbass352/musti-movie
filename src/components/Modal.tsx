@@ -17,8 +17,8 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  // Using vidsrc.cc which is very reliable for static hosting
-  const url = `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`;
+  // Switch to vidsrc.to with standard embed path
+  const url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
@@ -37,8 +37,7 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
           className="w-full h-full" 
           frameBorder="0" 
           allowFullScreen
-          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-          referrerPolicy="no-referrer"
+          allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
         ></iframe>
       </div>
     </div>
