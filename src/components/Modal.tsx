@@ -19,14 +19,14 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const movieId = movie?.id;
 
   let url = '';
-  if (provider === 'vidsrc.xyz') url = `https://vidsrc.xyz/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidlink.pro') url = `https://vidlink.pro/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidsrc.pro') url = `https://vidsrc.pro/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidsrc.cc') url = `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidsrc.in') url = `https://vidsrc.in/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidsrc.vip') url = `https://vidsrc.vip/embed/${mediaType}/${movieId}`;
-  else if (provider === 'multiembed') url = `https://multiembed.mov/?video_id=${movieId}&tmdb=1`;
+  if (provider === 'vidsrc.ovh') url = `https://vidsrc.ovh/embed/${mediaType}/${movieId}`;
+  else if (provider === 'streamwish') url = `https://streamwish.com/e/${movieId}`;
+  else if (provider === 'autoembed') url = `https://autoembed.co/embed/movie/${movieId}`;
+  else if (provider === 'mega') url = `https://mega.nz/embed/${movieId}`;
+  else if (provider === 'vidsrc') url = `https://vidsrc.net/embed/${mediaType}/${movieId}`;
+  else if (provider === 'anime') url = `https://aniwave.to/embed/${mediaType}/${movieId}`;
+  else if (provider === 'vidlink') url = `https://vidlink.pro/?id=${movieId}`;
+  else if (provider === 'dood') url = `https://dood.watch/e/${movieId}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
@@ -38,14 +38,14 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
             onChange={(e) => setProvider(e.target.value)}
             className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
           >
-            <option value="vidsrc.xyz">Server 1 (Auto)</option>
-            <option value="vidsrc.to">Server 2 (Fast)</option>
-            <option value="vidlink.pro">Server 3 (Arabic/Global)</option>
-            <option value="vidsrc.pro">Server 4 (International)</option>
-            <option value="vidsrc.cc">Server 5 (HD)</option>
-            <option value="vidsrc.in">Server 6 (Backup)</option>
-            <option value="vidsrc.vip">Server 7 (Premium)</option>
-            <option value="multiembed">Server 8 (Multi-Language)</option>
+            <option value="vidsrc.ovh">Server 1 (Main)</option>
+            <option value="streamwish">Server 2 (Stream)</option>
+            <option value="autoembed">Server 3 (Auto)</option>
+            <option value="mega">Server 4 (Mega)</option>
+            <option value="vidsrc">Server 5 (Net)</option>
+            <option value="anime">Server 6 (Anime)</option>
+            <option value="vidlink">Server 7 (Link)</option>
+            <option value="dood">Server 8 (Dood)</option>
           </select>
         </div>
         <button 
