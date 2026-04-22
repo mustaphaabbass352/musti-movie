@@ -2,6 +2,7 @@
 
 import { Search, Bell, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getThemeConfig } from '@/utils/theme';
 
 interface Props {
   onSearch: (query: string) => void;
@@ -10,6 +11,7 @@ interface Props {
 const Navbar = ({ onSearch }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [query, setQuery] = useState('');
+  const theme = getThemeConfig();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,9 +35,11 @@ const Navbar = ({ onSearch }: Props) => {
   };
 
   return (
-    <nav className={`fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4 transition-all lg:px-16 lg:py-6 ${isScrolled ? 'bg-[#141414]' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
+    <nav className={`fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4 transition-all duration-500 lg:px-16 lg:py-6 ${isScrolled ? 'bg-[#141414]' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
       <div className="flex items-center space-x-2 md:space-x-10">
-        <h1 className="text-3xl font-bold text-red-600 tracking-tighter cursor-pointer" onClick={() => window.location.reload()}>MUSTI</h1>
+        <h1 className={`text-3xl font-bold ${theme.primaryColor} tracking-tighter cursor-pointer transition-all duration-500`} onClick={() => window.location.reload()}>
+          {theme.brandName}
+        </h1>
         <ul className="hidden space-x-6 text-sm font-light md:flex">
           <li className="cursor-pointer hover:text-gray-300 transition duration-300">Home</li>
           <li className="cursor-pointer hover:text-gray-300 transition duration-300">Movies</li>

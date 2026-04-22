@@ -6,6 +6,7 @@ import Hero from "@/components/Hero";
 import Row from "@/components/Row";
 import Modal from "@/components/Modal";
 import { Play } from 'lucide-react';
+import { getThemeConfig } from '@/utils/theme';
 
 interface Props {
   trendingNow: any[];
@@ -31,6 +32,7 @@ const MainContent = ({
   const [searchResults, setSearchResults] = useState<any[] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [watchHistory, setWatchHistory] = useState<any[]>([]);
+  const theme = getThemeConfig();
 
   // Load watch history from localStorage on mount
   useEffect(() => {
@@ -95,7 +97,7 @@ const MainContent = ({
         {searchResults ? (
           <div className="pt-32 px-4 lg:px-16">
             <h1 className="text-2xl md:text-4xl font-bold mb-8 text-gray-400">
-              Results for: <span className="text-white italic">"{searchQuery}"</span>
+              Results for: <span className={`${theme.primaryColor} italic transition-all duration-500`}>"{searchQuery}"</span>
             </h1>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
               {searchResults.map((movie) => (
@@ -111,8 +113,8 @@ const MainContent = ({
                       alt={movie.title || movie.name}
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                      <div className="bg-white/20 p-3 rounded-full backdrop-blur-md border border-white/30">
-                        <Play className="h-6 w-6 fill-white text-white" />
+                      <div className={`p-3 rounded-full backdrop-blur-md border border-white/30 ${theme.isEventActive ? theme.accentColor + '/20' : 'bg-white/20'}`}>
+                        <Play className={`h-6 w-6 fill-white text-white`} />
                       </div>
                     </div>
                   </div>
