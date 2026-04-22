@@ -49,24 +49,27 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
       <div className="absolute top-6 right-6 flex items-center space-x-4 z-50">
-        <div className="bg-[#2a2a2a] rounded-full px-4 py-1.5 flex items-center border border-white/10 shadow-xl">
-          <span className="text-[10px] text-gray-400 mr-3 uppercase font-black tracking-widest">Server</span>
+        <div className="bg-red-600 rounded-full px-4 py-2 flex items-center border border-white/20 shadow-2xl hover:bg-red-700 transition-colors">
+          <span className="text-[10px] text-white mr-3 uppercase font-black tracking-widest">Select Server</span>
             <select 
               value={provider} 
               onChange={(e) => setProvider(e.target.value)}
-              className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
+              className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2 appearance-none"
             >
-              <option value="vidsrc.net">Server 1 (Vidsrc.net)</option>
-              <option value="vidsrc.me">Server 2 (Vidsrc.me)</option>
-              <option value="vidapi">Server 3 (VidAPI)</option>
-              <option value="vk">Server 4 (VK)</option>
-              <option value="ok">Server 5 (OK.ru)</option>
-              <option value="doodstream">Server 6 (Doodstream)</option>
-              <option value="mixdrop">Server 7 (Mixdrop)</option>
-              <option value="uqload">Server 8 (Uqload)</option>
-              <option value="cimafree">Server 9 (Cimafree)</option>
-              <option value="arabseed">Server 10 (Arabseed - New Tab)</option>
+              <option value="vidsrc.net" className="bg-[#141414]">Server 1 (Main)</option>
+              <option value="vidsrc.me" className="bg-[#141414]">Server 2 (Stable)</option>
+              <option value="vidapi" className="bg-[#141414]">Server 3 (HD)</option>
+              <option value="vk" className="bg-[#141414]">Server 4 (VK)</option>
+              <option value="ok" className="bg-[#141414]">Server 5 (OK.ru)</option>
+              <option value="doodstream" className="bg-[#141414]">Server 6 (Dood)</option>
+              <option value="mixdrop" className="bg-[#141414]">Server 7 (Mix)</option>
+              <option value="uqload" className="bg-[#141414]">Server 8 (Uq)</option>
+              <option value="cimafree" className="bg-[#141414]">Server 9 (Arabic)</option>
+              <option value="arabseed" className="bg-[#141414]">Server 10 (Arabseed)</option>
             </select>
+            <div className="pointer-events-none flex items-center text-white">
+              <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+            </div>
         </div>
         <button 
           onClick={() => setShowModal(false)}
