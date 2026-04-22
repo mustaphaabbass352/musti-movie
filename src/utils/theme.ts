@@ -11,7 +11,7 @@ export const getActiveEvent = () => {
       color: "text-[#FFD700]",            // MJ Gold
       accent: "bg-[#FFD700]",
       secondary: "text-white",
-      backdrop: "/m9Y9u377fUvps76NshYpY69PqMv.jpg" // Official Michael (2025) backdrop
+      backdrop: "/9n26S0Lp7u9Z46D6rU5G66r9X5Y.jpg" // Confirmed Michael (2025) biopic teaser backdrop
     },
     {
       name: "Deadpool & Wolverine",
