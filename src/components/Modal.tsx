@@ -19,14 +19,14 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const movieId = movie?.id;
 
   let url = '';
-  if (provider === 'vidsrc.ovh') url = `https://vidsrc.ovh/embed/${mediaType}/${movieId}`;
-  else if (provider === 'streamwish') url = `https://streamwish.com/e/${movieId}`;
-  else if (provider === 'autoembed') url = `https://autoembed.co/embed/movie/${movieId}`;
-  else if (provider === 'mega') url = `https://mega.nz/embed/${movieId}`;
-  else if (provider === 'vidsrc') url = `https://vidsrc.net/embed/${mediaType}/${movieId}`;
-  else if (provider === 'anime') url = `https://aniwave.to/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidlink') url = `https://vidlink.pro/?id=${movieId}`;
-  else if (provider === 'dood') url = `https://dood.watch/e/${movieId}`;
+  if (provider === 'vidsrc') url = `https://vidsrc.net/embed/${mediaType}/${movieId}`;
+  else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
+  else if (provider === 'player') url = `https://player.player.com/embed/${movieId}`;
+  else if (provider === '2embed') url = `https://2embed.org/embed/${movieId}`;
+  else if (provider === 'vidplay') url = `https://vidplay.net/e/${movieId}`;
+  else if (provider === 'streamhub') url = `https://streamhub.to/embed/${movieId}`;
+  else if (provider === 'filelinked') url = `https://filelinked.store/embed/${movieId}`;
+  else if (provider === 'goku') url = `https://goku.to/e/${movieId}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
@@ -38,14 +38,14 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
             onChange={(e) => setProvider(e.target.value)}
             className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
           >
-            <option value="vidsrc.ovh">Server 1 (Main)</option>
-            <option value="streamwish">Server 2 (Stream)</option>
-            <option value="autoembed">Server 3 (Auto)</option>
-            <option value="mega">Server 4 (Mega)</option>
-            <option value="vidsrc">Server 5 (Net)</option>
-            <option value="anime">Server 6 (Anime)</option>
-            <option value="vidlink">Server 7 (Link)</option>
-            <option value="dood">Server 8 (Dood)</option>
+            <option value="vidsrc">Server 1 (Vidsrc)</option>
+            <option value="vidsrc.to">Server 2 (Vidsrc.to)</option>
+            <option value="player">Server 3 (Player)</option>
+            <option value="2embed">Server 4 (2Embed)</option>
+            <option value="vidplay">Server 5 (Vidplay)</option>
+            <option value="streamhub">Server 6 (Streamhub)</option>
+            <option value="filelinked">Server 7 (Filelinked)</option>
+            <option value="goku">Server 8 (Goku)</option>
           </select>
         </div>
         <button 
