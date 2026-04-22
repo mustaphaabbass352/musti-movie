@@ -21,12 +21,12 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   let url = '';
   if (provider === 'vidsrc.xyz') url = `https://vidsrc.xyz/embed/${mediaType}/${movieId}`;
   else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
+  else if (provider === 'vidlink.pro') url = `https://vidlink.pro/embed/${mediaType}/${movieId}`;
+  else if (provider === 'vidsrc.pro') url = `https://vidsrc.pro/embed/${mediaType}/${movieId}`;
   else if (provider === 'vidsrc.cc') url = `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`;
   else if (provider === 'vidsrc.in') url = `https://vidsrc.in/embed/${mediaType}/${movieId}`;
-  else if (provider === 'vidsrc.me') url = `https://vidsrc.me/embed/${mediaType}/${movieId}`;
-  else if (provider === 'embed.su') url = `https://embed.su/embed/${mediaType}/${movieId}`;
   else if (provider === 'vidsrc.vip') url = `https://vidsrc.vip/embed/${mediaType}/${movieId}`;
-  else if (provider === '2embed') url = `https://www.2embed.cc/embed/${mediaType === 'movie' ? movieId : `tv?tmdb=${movieId}`}`;
+  else if (provider === 'multiembed') url = `https://multiembed.mov/?video_id=${movieId}&tmdb=1`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
@@ -40,12 +40,12 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
           >
             <option value="vidsrc.xyz">Server 1 (Auto)</option>
             <option value="vidsrc.to">Server 2 (Fast)</option>
-            <option value="vidsrc.cc">Server 3 (HD)</option>
-            <option value="vidsrc.in">Server 4 (Backup)</option>
-            <option value="vidsrc.me">Server 5 (International)</option>
-            <option value="embed.su">Server 6 (World/Arab)</option>
+            <option value="vidlink.pro">Server 3 (Arabic/Global)</option>
+            <option value="vidsrc.pro">Server 4 (International)</option>
+            <option value="vidsrc.cc">Server 5 (HD)</option>
+            <option value="vidsrc.in">Server 6 (Backup)</option>
             <option value="vidsrc.vip">Server 7 (Premium)</option>
-            <option value="2embed">Server 8 (Global)</option>
+            <option value="multiembed">Server 8 (Multi-Language)</option>
           </select>
         </div>
         <button 
