@@ -11,7 +11,7 @@ export const getActiveEvent = () => {
       color: "text-[#FFD700]",            // MJ Gold
       accent: "bg-[#FFD700]",
       secondary: "text-white",
-      backdrop: "https://variety.com/wp-content/uploads/2024/02/Michael-Jackson-Biopic-Jaafar-Jackson.jpg" // High-quality official teaser image
+      backdrop: "/michael-backdrop.webp" // Your custom Michael biopic image
     },
     {
       name: "Deadpool & Wolverine",
