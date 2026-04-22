@@ -6,10 +6,11 @@ export const getActiveEvent = () => {
   const events = [
     {
       name: "Michael",
-      start: new Date(currentYear, 3, 22), // Preview: Changed to today's date (April 22)
+      start: new Date(currentYear, 3, 22), // April 22
       end: new Date(currentYear, 4, 3),    // May 3
-      color: "text-yellow-500",           // Gold
-      accent: "bg-yellow-500"
+      color: "text-[#FFD700]",            // MJ Gold
+      accent: "bg-[#FFD700]",
+      secondary: "text-white"
     },
     {
       name: "Deadpool & Wolverine",
@@ -36,9 +37,10 @@ export const getThemeConfig = () => {
   return {
     isEventActive: !!activeEvent,
     eventName: activeEvent?.name || "",
-    brandName: "MUSTI",
+    brandName: activeEvent?.name?.toUpperCase() || "MUSTI",
     primaryColor: activeEvent?.color || "text-red-600",
     accentColor: activeEvent?.accent || "bg-red-600",
-    hoverColor: activeEvent ? `hover:${activeEvent.color}` : "hover:text-red-500",
+    hoverColor: activeEvent ? `hover:opacity-80` : "hover:text-red-500",
+    specialStyle: activeEvent?.name === "Michael" ? "michael-theme" : "",
   };
 };

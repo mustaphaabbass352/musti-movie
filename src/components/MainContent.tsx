@@ -90,7 +90,25 @@ const MainContent = ({
   const heroMovie = trendingNow[Math.floor(Math.random() * trendingNow.length)];
 
   return (
-    <div className="relative min-h-screen bg-[#141414]">
+    <div className={`relative min-h-screen bg-[#141414] ${theme.specialStyle}`}>
+      {theme.eventName === 'Michael' && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          {[...Array(20)].map((_, i) => (
+            <div 
+              key={i}
+              className="sparkle"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${Math.random() * 4 + 2}px`,
+                height: `${Math.random() * 4 + 2}px`,
+                animationDelay: `${Math.random() * 2}s`,
+                backgroundColor: i % 2 === 0 ? '#FFD700' : 'white'
+              }}
+            />
+          ))}
+        </div>
+      )}
       <Navbar onSearch={handleSearch} />
       
       <main className="relative pb-24 transition-all duration-500">

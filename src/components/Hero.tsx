@@ -1,6 +1,7 @@
 'use client'
 
 import { Play, Info } from 'lucide-react';
+import { getThemeConfig } from '@/utils/theme';
 
 interface Movie {
   id: number;
@@ -12,6 +13,7 @@ interface Movie {
 }
 
 const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void }) => {
+  const theme = getThemeConfig();
   if (!movie) return null;
 
   return (
@@ -30,7 +32,7 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
 
       {/* Content Container */}
       <div className="relative z-10 px-4 lg:px-16 space-y-6 pb-12">
-        <h1 className="text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase text-white shadow-sm">
+        <h1 className={`text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase ${theme.isEventActive ? theme.primaryColor : 'text-white'} shadow-sm transition-all duration-500`}>
           {movie?.title || movie?.name}
         </h1>
         <p className="max-w-xs text-sm text-shadow-md md:max-w-lg md:text-xl lg:max-w-3xl lg:text-2xl line-clamp-3 text-gray-200 font-medium">
@@ -40,9 +42,9 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
         <div className="flex space-x-4 pt-4">
           <button 
             onClick={onPlayClick}
-            className="flex items-center gap-x-2 rounded bg-white px-8 py-3 text-sm font-bold text-black transition hover:bg-gray-200 md:text-xl shadow-lg"
+            className={`flex items-center gap-x-2 rounded ${theme.isEventActive ? theme.accentColor + ' text-black' : 'bg-white text-black'} px-8 py-3 text-sm font-bold transition hover:opacity-80 md:text-xl shadow-lg`}
           >
-            <Play className="h-4 w-4 fill-black text-black md:h-7 md:w-7" />
+            <Play className={`h-4 w-4 fill-black text-black md:h-7 md:w-7`} />
             Play
           </button>
           <button className="flex items-center gap-x-2 rounded bg-gray-500/70 px-8 py-3 text-sm font-bold text-white transition hover:bg-gray-500/40 md:text-xl shadow-lg border border-white/10">

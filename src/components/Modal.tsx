@@ -2,6 +2,7 @@
 
 import { X, RefreshCcw } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { getThemeConfig } from '@/utils/theme';
 
 interface Props {
   showModal: boolean;
@@ -11,6 +12,7 @@ interface Props {
 
 const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const [iframeKey, setIframeKey] = useState(0);
+  const theme = getThemeConfig();
 
   useEffect(() => {
     if (showModal) {
@@ -35,14 +37,14 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
       <div className="absolute top-6 right-6 flex items-center space-x-4 z-50">
         <button 
           onClick={handleRefresh}
-          className="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20"
+          className={`text-white ${theme.isEventActive ? 'hover:' + theme.primaryColor : 'hover:text-red-600'} transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20`}
           title="Refresh Player"
         >
           <RefreshCcw className="h-6 w-6" />
         </button>
         <button 
           onClick={() => setShowModal(false)}
-          className="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20"
+          className={`text-white ${theme.isEventActive ? 'hover:' + theme.primaryColor : 'hover:text-red-600'} transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20`}
         >
           <X className="h-8 w-8" />
         </button>
