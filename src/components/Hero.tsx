@@ -19,9 +19,9 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
   return (
     <div className="relative h-[95vh] w-full flex flex-col justify-center lg:h-[140vh] lg:justify-end lg:pb-32">
       {/* Background Image Container */}
-      <div className="absolute top-0 left-0 h-full w-full">
+      <div className="absolute top-0 left-0 h-full w-full -z-10">
         <img
-          src={theme.eventBackdrop ? theme.eventBackdrop : `https://image.tmdb.org/t/p/original${movie?.backdrop_path || movie?.poster_path}`}
+          src={`https://image.tmdb.org/t/p/original${theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path}`}
           alt="Hero"
           className="h-full w-full object-cover"
         />
