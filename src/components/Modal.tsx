@@ -23,6 +23,10 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
   else if (provider === 'vidsrc.cc') url = `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`;
   else if (provider === 'vidsrc.in') url = `https://vidsrc.in/embed/${mediaType}/${movieId}`;
+  else if (provider === 'vidsrc.me') url = `https://vidsrc.me/embed/${mediaType}/${movieId}`;
+  else if (provider === 'embed.su') url = `https://embed.su/embed/${mediaType}/${movieId}`;
+  else if (provider === 'vidsrc.vip') url = `https://vidsrc.vip/embed/${mediaType}/${movieId}`;
+  else if (provider === '2embed') url = `https://www.2embed.cc/embed/${mediaType === 'movie' ? movieId : `tv?tmdb=${movieId}`}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
@@ -38,6 +42,10 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
             <option value="vidsrc.to">Server 2 (Fast)</option>
             <option value="vidsrc.cc">Server 3 (HD)</option>
             <option value="vidsrc.in">Server 4 (Backup)</option>
+            <option value="vidsrc.me">Server 5 (International)</option>
+            <option value="embed.su">Server 6 (World/Arab)</option>
+            <option value="vidsrc.vip">Server 7 (Premium)</option>
+            <option value="2embed">Server 8 (Global)</option>
           </select>
         </div>
         <button 
