@@ -1,7 +1,7 @@
 'use client'
 
-import { X, ExternalLink } from 'lucide-react';
-import { useState } from 'react';
+import { X, ExternalLink, RefreshCcw } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface Props {
   showModal: boolean;
@@ -11,6 +11,13 @@ interface Props {
 
 const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const [provider, setProvider] = useState('vidsrc.net');
+  const [iframeKey, setIframeKey] = useState(0);
+
+  useEffect(() => {
+    if (showModal) {
+      setIframeKey(prev => prev + 1);
+    }
+  }, [showModal, provider]);
 
   if (!showModal || !movie) return null;
 
@@ -24,31 +31,38 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
     url = `https://vidsrc.net/embed/${mediaType}/${movieId}`;
   } else if (provider === 'vidsrc.me') {
     url = `https://vidsrc.me/embed/${mediaType}/${movieId}`;
-  } else if (provider === 'vidapi') {
-    url = `https://vidapi.xyz/embed/${mediaType}/${movieId}`;
-  } else if (provider === 'embedmaster') {
-    url = `https://embedmaster.link/${mediaType}/${movieId}`;
-  } else if (provider === 'vk') {
-    url = `https://vk.com/video_ext.php?oid=-211340156&id=${movieId}&hash=0`; // Example VK pattern
-  } else if (provider === 'ok') {
-    url = `https://ok.ru/videoembed/${movieId}`;
-  } else if (provider === 'doodstream') {
-    url = `https://dood.to/e/${movieId}`;
-  } else if (provider === 'mixdrop') {
-    url = `https://mixdrop.co/e/${movieId}`;
-  } else if (provider === 'uqload') {
-    url = `https://uqload.com/embed-${movieId}.html`;
-  } else if (provider === 'cimafree') {
-    url = `https://cimafree.com/embed/${movieId}`;
+  } else if (provider === 'vidsrc.pm') {
+    url = `https://vidsrc.pm/embed/${mediaType}/${movieId}`;
+  } else if (provider === 'vidsrc.cc') {
+    url = `https://vidsrc.cc/v2/embed/${mediaType}/${movieId}`;
+  } else if (provider === 'multiembed') {
+    url = `https://multiembed.mov/?video_id=${movieId}&tmdb=1`;
+  } else if (provider === 'embedapi') {
+    url = `https://player.embed-api.stream/?id=${movieId}`;
+  } else if (provider === 'autoembed') {
+    url = `https://autoembed.cc/embed/${mediaType}/${movieId}`;
+  } else if (provider === '2embed') {
+    url = `https://2embed.cc/embed/${movieId}`;
   } else if (provider === 'arabseed') {
     url = `https://m.arabseed.one/search?q=${encodeURIComponent(movieTitle)}`;
   }
 
   const isExternalProvider = provider === 'arabseed';
 
+  const handleRefresh = () => {
+    setIframeKey(prev => prev + 1);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
       <div className="absolute top-6 right-6 flex items-center space-x-4 z-50">
+        <button 
+          onClick={handleRefresh}
+          className="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20"
+          title="Refresh Player"
+        >
+          <RefreshCcw className="h-6 w-6" />
+        </button>
         <div className="bg-red-600 rounded-full px-4 py-2 flex items-center border border-white/20 shadow-2xl hover:bg-red-700 transition-colors">
           <span className="text-[10px] text-white mr-3 uppercase font-black tracking-widest">Select Server</span>
             <select 
@@ -56,16 +70,15 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
               onChange={(e) => setProvider(e.target.value)}
               className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2 appearance-none"
             >
-              <option value="vidsrc.net" className="bg-[#141414]">Server 1 (Main)</option>
+              <option value="vidsrc.net" className="bg-[#141414]">Server 1 (Fastest)</option>
               <option value="vidsrc.me" className="bg-[#141414]">Server 2 (Stable)</option>
-              <option value="vidapi" className="bg-[#141414]">Server 3 (HD)</option>
-              <option value="vk" className="bg-[#141414]">Server 4 (VK)</option>
-              <option value="ok" className="bg-[#141414]">Server 5 (OK.ru)</option>
-              <option value="doodstream" className="bg-[#141414]">Server 6 (Dood)</option>
-              <option value="mixdrop" className="bg-[#141414]">Server 7 (Mix)</option>
-              <option value="uqload" className="bg-[#141414]">Server 8 (Uq)</option>
-              <option value="cimafree" className="bg-[#141414]">Server 9 (Arabic)</option>
-              <option value="arabseed" className="bg-[#141414]">Server 10 (Arabseed)</option>
+              <option value="vidsrc.pm" className="bg-[#141414]">Server 3 (New)</option>
+              <option value="vidsrc.cc" className="bg-[#141414]">Server 4 (Backup)</option>
+              <option value="multiembed" className="bg-[#141414]">Server 5 (Multi-Source)</option>
+              <option value="embedapi" className="bg-[#141414]">Server 6 (Global)</option>
+              <option value="autoembed" className="bg-[#141414]">Server 7 (Auto)</option>
+              <option value="2embed" className="bg-[#141414]">Server 8 (2Embed)</option>
+              <option value="arabseed" className="bg-[#141414]">Server 9 (Arabseed - New Tab)</option>
             </select>
             <div className="pointer-events-none flex items-center text-white">
               <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
@@ -107,11 +120,12 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
           </div>
         ) : (
           <iframe 
+            key={iframeKey}
             src={url} 
             className="w-full h-full" 
             frameBorder="0" 
             allowFullScreen
-            allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; gyroscope; accelerometer"
           ></iframe>
         )}
       </div>
