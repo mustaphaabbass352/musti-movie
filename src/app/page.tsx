@@ -10,7 +10,6 @@ export default async function Home() {
     horrorMovies,
     romanceMovies,
     documentaries,
-    arabicMovies,
   ] = await Promise.all([
     fetch(requests.fetchTrending).then((res) => res.json()),
     fetch(requests.fetchTopRated).then((res) => res.json()),
@@ -19,7 +18,6 @@ export default async function Home() {
     fetch(requests.fetchHorrorMovies).then((res) => res.json()),
     fetch(requests.fetchRomanceMovies).then((res) => res.json()),
     fetch(requests.fetchDocumentaries).then((res) => res.json()),
-    fetch(requests.fetchArabicMovies).then((res) => res.json()),
   ]);
 
   if (!trendingNow.results) {
@@ -42,7 +40,6 @@ export default async function Home() {
       horrorMovies={horrorMovies.results}
       romanceMovies={romanceMovies.results}
       documentaries={documentaries.results}
-      arabicMovies={arabicMovies.results}
     />
   );
 }

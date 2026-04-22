@@ -15,7 +15,6 @@ interface Props {
   horrorMovies: any[];
   romanceMovies: any[];
   documentaries: any[];
-  arabicMovies: any[];
 }
 
 const MainContent = ({ 
@@ -25,8 +24,7 @@ const MainContent = ({
   comedyMovies, 
   horrorMovies, 
   romanceMovies, 
-  documentaries,
-  arabicMovies
+  documentaries
 }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<any>(null);
@@ -127,7 +125,6 @@ const MainContent = ({
                 <Row title="Continue Watching" movies={watchHistory} onMovieClick={handleMovieClick} />
               )}
               <Row title="Trending Now" movies={trendingNow} onMovieClick={handleMovieClick} />
-              <Row title="Arabic Cinema" movies={arabicMovies} onMovieClick={handleMovieClick} />
               <Row title="Top Rated" movies={topRated} onMovieClick={handleMovieClick} />
               <Row title="Action Thrillers" movies={actionMovies} onMovieClick={handleMovieClick} />
               <Row title="Comedies" movies={comedyMovies} onMovieClick={handleMovieClick} />
