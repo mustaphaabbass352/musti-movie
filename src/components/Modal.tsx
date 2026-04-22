@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Modal = ({ showModal, setShowModal, movie }: Props) => {
-  const [provider, setProvider] = useState('vidsrc');
+  const [provider, setProvider] = useState('vidsrc.net');
 
   if (!showModal || !movie) return null;
 
@@ -20,13 +20,18 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const movieTitle = movie?.title || movie?.name;
 
   let url = '';
-  if (provider === 'vidsrc') {
+  if (provider === 'vidsrc.net') {
     url = `https://vidsrc.net/embed/${mediaType}/${movieId}`;
-  } else if (provider === 'arabseed') {
-    // Arabseed search URL for the movie title
-    url = `https://m.arabseed.one/search?q=${encodeURIComponent(movieTitle)}`;
   } else if (provider === 'vidsrc.me') {
     url = `https://vidsrc.me/embed/${mediaType}/${movieId}`;
+  } else if (provider === 'vidapi') {
+    url = `https://vidapi.xyz/embed/${mediaType}/${movieId}`;
+  } else if (provider === 'embedmaster') {
+    url = `https://embedmaster.link/${mediaType}/${movieId}`;
+  } else if (provider === '2embed') {
+    url = `https://www.2embed.stream/embed/${mediaType}/${movieId}`;
+  } else if (provider === 'arabseed') {
+    url = `https://m.arabseed.one/search?q=${encodeURIComponent(movieTitle)}`;
   }
 
   const isExternalProvider = provider === 'arabseed';
@@ -41,9 +46,12 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
             onChange={(e) => setProvider(e.target.value)}
             className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
           >
-            <option value="vidsrc">Server 1 (Vidsrc - Auto)</option>
-            <option value="vidsrc.me">Server 2 (Vidsrc.me - Stable)</option>
-            <option value="arabseed">Server 3 (Arabseed - Search Arabic)</option>
+            <option value="vidsrc.net">Server 1 (Vidsrc.net - Stable)</option>
+            <option value="vidsrc.me">Server 2 (Vidsrc.me - Global)</option>
+            <option value="vidapi">Server 3 (VidAPI - International)</option>
+            <option value="embedmaster">Server 4 (EmbedMaster - New)</option>
+            <option value="2embed">Server 5 (2Embed - Backup)</option>
+            <option value="arabseed">Server 6 (Arabseed - New Tab Only)</option>
           </select>
         </div>
         <button 
@@ -63,9 +71,11 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
               </div>
             </div>
             <div className="space-y-4">
-              <h3 className="text-3xl font-bold text-white">Watch on Arabseed</h3>
+              <h3 className="text-3xl font-bold text-white">Arabseed Blocking</h3>
               <p className="text-gray-400 max-w-md mx-auto">
-                Arabseed blocks direct embedding. Click the button below to open the search for "{movieTitle}" in a new tab and start watching!
+                Arabseed blocks other websites from showing their videos directly. To watch on Arabseed, you must open it in a new tab.
+                <br/><br/>
+                <span className="text-red-500 font-bold">Try Server 1, 2, or 3</span> to watch directly on this site!
               </p>
             </div>
             <a 
