@@ -36,7 +36,19 @@ const MainContent = ({
   useEffect(() => {
     const savedHistory = localStorage.getItem('musti-watch-history');
     if (savedHistory) {
-      setWatchHistory(JSON.parse(savedHistory));
+      const history = JSON.parse(savedHistory);
+      // Filter out Arabic movies from history
+      const filteredHistory = history.filter((movie: any) => {
+        const title = (movie.title || movie.name || '').toLowerCase();
+        const isArabic = movie.original_language === 'ar' || 
+                         title.includes('omar & salma') || 
+                         title === 'restart' || 
+                         title === 'love story' ||
+                         title === 'the suit';
+        return !isArabic;
+      });
+      setWatchHistory(filteredHistory);
+      localStorage.setItem('musti-watch-history', JSON.stringify(filteredHistory));
     }
   }, []);
 
