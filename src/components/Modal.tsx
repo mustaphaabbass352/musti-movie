@@ -1,6 +1,6 @@
 'use client'
 
-import { X } from 'lucide-react';
+import { X, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
 
 interface Props {
@@ -25,7 +25,11 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   } else if (provider === 'arabseed') {
     // Arabseed search URL for the movie title
     url = `https://m.arabseed.one/search?q=${encodeURIComponent(movieTitle)}`;
+  } else if (provider === 'vidsrc.me') {
+    url = `https://vidsrc.me/embed/${mediaType}/${movieId}`;
   }
+
+  const isExternalProvider = provider === 'arabseed';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
@@ -38,7 +42,8 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
             className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
           >
             <option value="vidsrc">Server 1 (Vidsrc - Auto)</option>
-            <option value="arabseed">Server 2 (Arabseed - Arabic)</option>
+            <option value="vidsrc.me">Server 2 (Vidsrc.me - Stable)</option>
+            <option value="arabseed">Server 3 (Arabseed - Search Arabic)</option>
           </select>
         </div>
         <button 
@@ -49,14 +54,39 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
         </button>
       </div>
       
-      <div className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative border border-white/5">
-        <iframe 
-          src={url} 
-          className="w-full h-full" 
-          frameBorder="0" 
-          allowFullScreen
-          allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
-        ></iframe>
+      <div className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative border border-white/5 flex items-center justify-center">
+        {isExternalProvider ? (
+          <div className="text-center space-y-8 p-12">
+            <div className="flex justify-center">
+              <div className="p-6 bg-red-600/10 rounded-full border border-red-600/20">
+                <ExternalLink className="h-16 w-16 text-red-600" />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-3xl font-bold text-white">Watch on Arabseed</h3>
+              <p className="text-gray-400 max-w-md mx-auto">
+                Arabseed blocks direct embedding. Click the button below to open the search for "{movieTitle}" in a new tab and start watching!
+              </p>
+            </div>
+            <a 
+              href={url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-8 py-4 bg-red-600 text-white rounded-full font-bold hover:bg-red-700 transition-all shadow-lg hover:shadow-red-600/20 transform hover:-translate-y-1"
+            >
+              Open Arabseed Search
+              <ExternalLink className="ml-2 h-5 w-5" />
+            </a>
+          </div>
+        ) : (
+          <iframe 
+            src={url} 
+            className="w-full h-full" 
+            frameBorder="0" 
+            allowFullScreen
+            allow="autoplay; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+        )}
       </div>
     </div>
   );
