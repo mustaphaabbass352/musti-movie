@@ -16,17 +16,24 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
   const theme = getThemeConfig();
   if (!movie) return null;
 
+  const backdropPath = theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path;
+  const imageUrl = backdropPath 
+    ? (backdropPath.startsWith('http') ? backdropPath : `https://image.tmdb.org/t/p/original${backdropPath}`)
+    : '';
+
   return (
     <div className="relative h-[95vh] w-full flex flex-col justify-center lg:h-[140vh] lg:justify-end lg:pb-32">
       {/* Background Image Container */}
-      <div className="absolute top-0 left-0 h-full w-full">
-        <img
-          src={`https://image.tmdb.org/t/p/original${theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path}`}
-          alt="Hero"
-          className="h-full w-full object-cover"
-        />
+      <div className="absolute top-0 left-0 h-full w-full pointer-events-none">
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt="Hero Background"
+            className="h-full w-full object-cover transition-opacity duration-1000"
+          />
+        )}
         {/* Gradients to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/60 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-transparent to-transparent" />
       </div>
 

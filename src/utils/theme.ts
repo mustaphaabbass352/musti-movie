@@ -11,7 +11,7 @@ export const getActiveEvent = () => {
       color: "text-[#FFD700]",            // MJ Gold
       accent: "bg-[#FFD700]",
       secondary: "text-white",
-      backdrop: "/9n26S0Lp7u9Z46D6rU5G66r9X5Y.jpg" // Confirmed Michael (2025) biopic teaser backdrop
+      backdrop: "https://variety.com/wp-content/uploads/2024/02/Michael-Jackson-Biopic-Jaafar-Jackson.jpg" // High-quality official teaser image
     },
     {
       name: "Deadpool & Wolverine",
