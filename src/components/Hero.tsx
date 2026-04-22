@@ -21,7 +21,7 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
       {/* Background Image Container */}
       <div className="absolute top-0 left-0 h-full w-full">
         <img
-          src={`https://image.tmdb.org/t/p/original${movie?.backdrop_path || movie?.poster_path}`}
+          src={`https://image.tmdb.org/t/p/original${theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path}`}
           alt="Hero"
           className="h-full w-full object-cover"
         />
@@ -37,11 +37,13 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
         </h1>
         {theme.eventName === 'Michael' && (
           <p className="text-[#FFD700] text-xl md:text-3xl font-black uppercase tracking-widest animate-pulse">
-            Coming Soon till May 3rd
+            Coming Soon
           </p>
         )}
         <p className="max-w-xs text-sm text-shadow-md md:max-w-lg md:text-xl lg:max-w-3xl lg:text-2xl line-clamp-3 text-gray-200 font-medium">
-          {movie?.overview}
+          {theme.eventName === 'Michael' 
+            ? "Discover the making of a king. The story of Michael Jackson, one of the most influential artists the world has ever known, and his life beyond the music." 
+            : movie?.overview}
         </p>
 
         <div className="flex space-x-4 pt-4">
