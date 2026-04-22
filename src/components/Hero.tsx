@@ -18,7 +18,9 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
 
   const backdropPath = theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path;
   const imageUrl = backdropPath 
-    ? (backdropPath.startsWith('http') ? backdropPath : `https://image.tmdb.org/t/p/original${backdropPath}`)
+    ? (backdropPath.startsWith('http') || (theme.isEventActive && theme.eventBackdrop === backdropPath) 
+        ? backdropPath 
+        : `https://image.tmdb.org/t/p/original${backdropPath}`)
     : '';
 
   return (
