@@ -30,23 +30,22 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
   }
 
   return (
-    <div className="relative h-[95vh] w-full flex flex-col justify-center lg:h-[140vh] lg:justify-end lg:pb-32">
+    <div className="relative h-[95vh] w-full flex flex-col justify-center lg:h-[140vh] lg:justify-end lg:pb-32 overflow-hidden">
       {/* Background Image Container */}
-      <div className="absolute top-0 left-0 h-full w-full pointer-events-none">
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt="Hero Background"
-            className="h-full w-full object-cover transition-opacity duration-1000"
-          />
-        )}
+      <div 
+        className="absolute inset-0 bg-cover bg-center z-0"
+        style={{ 
+          backgroundImage: `url(${imageUrl})`,
+          backgroundPosition: 'center 20%'
+        }}
+      >
         {/* Gradients to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-transparent to-transparent z-10" />
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 px-4 lg:px-16 space-y-6 pb-12">
+      <div className="relative z-20 px-4 lg:px-16 space-y-6 pb-12">
         <h1 className={`text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase ${theme.isEventActive ? theme.primaryColor : 'text-white'} shadow-sm transition-all duration-500`}>
           {theme.eventName === 'Michael' ? 'MICHAEL' : (movie?.title || movie?.name)}
         </h1>
