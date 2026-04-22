@@ -21,7 +21,7 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
       {/* Background Image Container */}
       <div className="absolute top-0 left-0 h-full w-full">
         <img
-          src={`https://image.tmdb.org/t/p/original${theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path}`}
+          src={theme.eventBackdrop ? theme.eventBackdrop : `https://image.tmdb.org/t/p/original${movie?.backdrop_path || movie?.poster_path}`}
           alt="Hero"
           className="h-full w-full object-cover"
         />
