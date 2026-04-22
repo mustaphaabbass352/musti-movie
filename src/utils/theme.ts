@@ -37,7 +37,7 @@ export const getThemeConfig = () => {
   return {
     isEventActive: !!activeEvent,
     eventName: activeEvent?.name || "",
-    brandName: activeEvent?.name?.toUpperCase() || "MUSTI",
+    brandName: "MUSTI",
     primaryColor: activeEvent?.color || "text-red-600",
     accentColor: activeEvent?.accent || "bg-red-600",
     hoverColor: activeEvent ? `hover:opacity-80` : "hover:text-red-500",

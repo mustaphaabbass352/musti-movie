@@ -33,8 +33,13 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
       {/* Content Container */}
       <div className="relative z-10 px-4 lg:px-16 space-y-6 pb-12">
         <h1 className={`text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase ${theme.isEventActive ? theme.primaryColor : 'text-white'} shadow-sm transition-all duration-500`}>
-          {movie?.title || movie?.name}
+          {theme.eventName === 'Michael' ? 'MICHAEL' : (movie?.title || movie?.name)}
         </h1>
+        {theme.eventName === 'Michael' && (
+          <p className="text-[#FFD700] text-xl md:text-3xl font-black uppercase tracking-widest animate-pulse">
+            Coming Soon till May 3rd
+          </p>
+        )}
         <p className="max-w-xs text-sm text-shadow-md md:max-w-lg md:text-xl lg:max-w-3xl lg:text-2xl line-clamp-3 text-gray-200 font-medium">
           {movie?.overview}
         </p>
@@ -45,7 +50,7 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
             className={`flex items-center gap-x-2 rounded ${theme.isEventActive ? theme.accentColor + ' text-black' : 'bg-white text-black'} px-8 py-3 text-sm font-bold transition hover:opacity-80 md:text-xl shadow-lg`}
           >
             <Play className={`h-4 w-4 fill-black text-black md:h-7 md:w-7`} />
-            Play
+            {theme.eventName === 'Michael' ? 'Notify Me' : 'Play'}
           </button>
           <button className="flex items-center gap-x-2 rounded bg-gray-500/70 px-8 py-3 text-sm font-bold text-white transition hover:bg-gray-500/40 md:text-xl shadow-lg border border-white/10">
             <Info className="h-5 w-5 md:h-8 md:w-8" />
