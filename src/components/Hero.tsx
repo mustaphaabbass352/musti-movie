@@ -17,11 +17,17 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
   if (!movie) return null;
 
   const backdropPath = theme.eventBackdrop || movie?.backdrop_path || movie?.poster_path;
-  const imageUrl = backdropPath 
-    ? (backdropPath.startsWith('http') || (theme.isEventActive && theme.eventBackdrop === backdropPath) 
-        ? backdropPath 
-        : `https://image.tmdb.org/t/p/original${backdropPath}`)
-    : '';
+  let imageUrl = '';
+  
+  if (theme.isEventActive && theme.eventBackdrop) {
+    // If it's an event with a custom backdrop, use it directly (it's in /public)
+    imageUrl = theme.eventBackdrop;
+  } else if (backdropPath) {
+    // Otherwise, use the TMDB URL
+    imageUrl = backdropPath.startsWith('http') 
+      ? backdropPath 
+      : `https://image.tmdb.org/t/p/original${backdropPath}`;
+  }
 
   return (
     <div className="relative h-[95vh] w-full flex flex-col justify-center lg:h-[140vh] lg:justify-end lg:pb-32">
