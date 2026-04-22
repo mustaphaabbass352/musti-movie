@@ -28,8 +28,18 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
     url = `https://vidapi.xyz/embed/${mediaType}/${movieId}`;
   } else if (provider === 'embedmaster') {
     url = `https://embedmaster.link/${mediaType}/${movieId}`;
-  } else if (provider === '2embed') {
-    url = `https://www.2embed.stream/embed/${mediaType}/${movieId}`;
+  } else if (provider === 'vk') {
+    url = `https://vk.com/video_ext.php?oid=-211340156&id=${movieId}&hash=0`; // Example VK pattern
+  } else if (provider === 'ok') {
+    url = `https://ok.ru/videoembed/${movieId}`;
+  } else if (provider === 'doodstream') {
+    url = `https://dood.to/e/${movieId}`;
+  } else if (provider === 'mixdrop') {
+    url = `https://mixdrop.co/e/${movieId}`;
+  } else if (provider === 'uqload') {
+    url = `https://uqload.com/embed-${movieId}.html`;
+  } else if (provider === 'cimafree') {
+    url = `https://cimafree.com/embed/${movieId}`;
   } else if (provider === 'arabseed') {
     url = `https://m.arabseed.one/search?q=${encodeURIComponent(movieTitle)}`;
   }
@@ -41,18 +51,22 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
       <div className="absolute top-6 right-6 flex items-center space-x-4 z-50">
         <div className="bg-[#2a2a2a] rounded-full px-4 py-1.5 flex items-center border border-white/10 shadow-xl">
           <span className="text-[10px] text-gray-400 mr-3 uppercase font-black tracking-widest">Server</span>
-          <select 
-            value={provider} 
-            onChange={(e) => setProvider(e.target.value)}
-            className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
-          >
-            <option value="vidsrc.net">Server 1 (Vidsrc.net - Stable)</option>
-            <option value="vidsrc.me">Server 2 (Vidsrc.me - Global)</option>
-            <option value="vidapi">Server 3 (VidAPI - International)</option>
-            <option value="embedmaster">Server 4 (EmbedMaster - New)</option>
-            <option value="2embed">Server 5 (2Embed - Backup)</option>
-            <option value="arabseed">Server 6 (Arabseed - New Tab Only)</option>
-          </select>
+            <select 
+              value={provider} 
+              onChange={(e) => setProvider(e.target.value)}
+              className="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2"
+            >
+              <option value="vidsrc.net">Server 1 (Vidsrc.net)</option>
+              <option value="vidsrc.me">Server 2 (Vidsrc.me)</option>
+              <option value="vidapi">Server 3 (VidAPI)</option>
+              <option value="vk">Server 4 (VK)</option>
+              <option value="ok">Server 5 (OK.ru)</option>
+              <option value="doodstream">Server 6 (Doodstream)</option>
+              <option value="mixdrop">Server 7 (Mixdrop)</option>
+              <option value="uqload">Server 8 (Uqload)</option>
+              <option value="cimafree">Server 9 (Cimafree)</option>
+              <option value="arabseed">Server 10 (Arabseed - New Tab)</option>
+            </select>
         </div>
         <button 
           onClick={() => setShowModal(false)}
