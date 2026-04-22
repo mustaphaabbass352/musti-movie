@@ -6,7 +6,7 @@ export const getActiveEvent = () => {
   const events = [
     {
       name: "Michael",
-      start: new Date(currentYear, 3, 26), // April 26
+      start: new Date(currentYear, 3, 22), // Preview: Changed to today's date (April 22)
       end: new Date(currentYear, 4, 3),    // May 3
       color: "text-yellow-500",           // Gold
       accent: "bg-yellow-500"
