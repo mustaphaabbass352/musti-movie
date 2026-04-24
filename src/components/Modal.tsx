@@ -26,8 +26,8 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  // Using vidsrc.to as the primary provider for best HD quality and audio
-  const url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
+  // Using vidsrc.me for the best available audio track (Line-In) for new releases
+  const url = `https://vidsrc.me/embed/${mediaType}?tmdb=${movieId}`;
 
   const handleRefresh = () => {
     setIframeKey(prev => prev + 1);

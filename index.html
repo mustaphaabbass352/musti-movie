@@ -101,17 +101,7 @@
 
     <!-- Video Player Modal -->
     <div id="player-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="absolute top-6 right-6 flex items-center space-x-4 z-[110]">
-            <!-- Provider Switcher -->
-            <div class="bg-[#2a2a2a] rounded-full px-4 py-1.5 flex items-center border border-white/10 shadow-xl">
-                <span class="text-[10px] text-gray-400 mr-3 uppercase font-black tracking-widest">Server</span>
-                <select id="provider-select" onchange="switchProvider()" class="bg-transparent text-white text-xs outline-none cursor-pointer font-bold pr-2">
-                    <option value="vidsrc.xyz">Server 1 (Auto)</option>
-                    <option value="vidsrc.to">Server 2 (Fast)</option>
-                    <option value="vidsrc.cc">Server 3 (HD)</option>
-                    <option value="vidsrc.in">Server 4 (Backup)</option>
-                </select>
-            </div>
+        <div class="absolute top-6 right-6 z-[110]">
             <button onclick="closePlayer()" class="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
@@ -144,18 +134,12 @@
 
         function updateIframe() {
             const iframe = document.getElementById('video-iframe');
-            const provider = document.getElementById('provider-select').value;
             
             // TMDB movies often don't have media_type unless it's a multi search.
             const type = currentMediaType || (document.getElementById('hero-title').innerText ? 'movie' : 'tv');
             
-            let url = '';
-            if (provider === 'vidsrc.xyz') url = `https://vidsrc.xyz/embed/${type}/${currentMovieId}`;
-            else if (provider === 'vidsrc.to') url = `https://vidsrc.to/embed/${type}/${currentMovieId}`;
-            else if (provider === 'vidsrc.cc') url = `https://vidsrc.cc/v2/embed/${type}/${currentMovieId}`;
-            else if (provider === 'vidsrc.in') url = `https://vidsrc.in/embed/${type}/${currentMovieId}`;
-
-            iframe.src = url;
+            // Using vidsrc.me for better audio tracks (Line-In)
+            iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${currentMovieId}`;
         }
 
         function switchProvider() {
