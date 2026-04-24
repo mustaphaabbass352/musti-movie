@@ -173,7 +173,16 @@
             try {
                 const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`);
                 const data = await res.json();
-                const results = data.results.filter(m => m.poster_path || m.backdrop_path);
+                
+                // Filter out results without images and broken Michael entries
+                const results = data.results.filter(movie => {
+                    const hasImage = movie.poster_path || movie.backdrop_path;
+                    const title = (movie.title || movie.name || '').toLowerCase();
+                    if (title === 'michael') {
+                        return movie.id === 936075;
+                    }
+                    return hasImage;
+                });
 
                 // UI Changes
                 document.getElementById('main-content').classList.add('hidden');
@@ -235,8 +244,21 @@
 
         async function init() {
             // Fetch data
-            const trending = await fetchMovies('/trending/all/week');
-            const topRated = await fetchMovies('/movie/top_rated');
+            let trending = await fetchMovies('/trending/all/week');
+            let topRated = await fetchMovies('/movie/top_rated');
+
+            // Filter logic for grids
+            const filterMovies = (list) => list.filter(movie => {
+                const hasImage = movie.backdrop_path || movie.poster_path;
+                const title = (movie.title || movie.name || '').toLowerCase();
+                if (title === 'michael') {
+                    return movie.id === 936075;
+                }
+                return hasImage;
+            });
+
+            trending = filterMovies(trending);
+            topRated = filterMovies(topRated);
 
             // Setup Hero
             if (trending.length > 0) {
