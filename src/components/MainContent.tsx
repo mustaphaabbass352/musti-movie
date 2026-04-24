@@ -43,14 +43,18 @@ const MainContent = ({
       const filteredHistory = history.filter((movie: any) => {
         const title = (movie.title || movie.name || '').toLowerCase();
         const hasImage = movie.backdrop_path && !movie.backdrop_path.includes('undefined') && !movie.backdrop_path.includes('null');
-        const isBrokenMichael = title === 'michael' && (!movie.backdrop_path || movie.backdrop_path === '/michael-backdrop.webp' && !movie.id);
+        
+        // BLOCK ALL MICHAELS EXCEPT THE REAL ONE
+        if (title.includes('michael')) {
+          return movie.id === 936075;
+        }
         
         const isArabic = movie.original_language === 'ar' || 
                          title.includes('omar & salma') || 
                          title === 'restart' || 
                          title === 'love story' ||
                          title === 'the suit';
-        return !isArabic && hasImage && !isBrokenMichael;
+        return !isArabic && hasImage;
       });
       setWatchHistory(filteredHistory);
       localStorage.setItem('musti-watch-history', JSON.stringify(filteredHistory));
@@ -180,23 +184,45 @@ const MainContent = ({
                     : trendingNow
                   ).filter(m => {
                     const title = (m.title || m.name || '').toLowerCase();
-                    // Keep if it has a real backdrop path (not placeholder or broken)
-                    const hasValidImage = m.backdrop_path && m.backdrop_path.length > 5;
-                    // If it's a Michael entry, only keep our specific one with ID 936075
-                    if (title === 'michael') {
+                    // BLOCK ALL MICHAELS EXCEPT THE REAL ONE (ID 936075)
+                    if (title.includes('michael')) {
                       return m.id === 936075;
                     }
-                    return hasValidImage;
+                    return m.backdrop_path && m.backdrop_path.length > 5;
                   })
                 } 
                 onMovieClick={handleMovieClick} 
               />
-              <Row title="Top Rated" movies={topRated.filter(m => m.backdrop_path && m.backdrop_path.length > 5)} onMovieClick={handleMovieClick} />
-              <Row title="Action Thrillers" movies={actionMovies.filter(m => m.backdrop_path && m.backdrop_path.length > 5)} onMovieClick={handleMovieClick} />
-              <Row title="Com comedies" movies={comedyMovies.filter(m => m.backdrop_path && m.backdrop_path.length > 5)} onMovieClick={handleMovieClick} />
-              <Row title="Scary Movies" movies={horrorMovies.filter(m => m.backdrop_path && m.backdrop_path.length > 5)} onMovieClick={handleMovieClick} />
-              <Row title="Romance" movies={romanceMovies.filter(m => m.backdrop_path && m.backdrop_path.length > 5)} onMovieClick={handleMovieClick} />
-              <Row title="Documentaries" movies={documentaries.filter(m => m.backdrop_path && m.backdrop_path.length > 5)} onMovieClick={handleMovieClick} />
+              <Row title="Top Rated" movies={topRated.filter(m => {
+                const title = (m.title || m.name || '').toLowerCase();
+                if (title.includes('michael')) return m.id === 936075;
+                return m.backdrop_path && m.backdrop_path.length > 5;
+              })} onMovieClick={handleMovieClick} />
+              <Row title="Action Thrillers" movies={actionMovies.filter(m => {
+                const title = (m.title || m.name || '').toLowerCase();
+                if (title.includes('michael')) return m.id === 936075;
+                return m.backdrop_path && m.backdrop_path.length > 5;
+              })} onMovieClick={handleMovieClick} />
+              <Row title="Com comedies" movies={comedyMovies.filter(m => {
+                const title = (m.title || m.name || '').toLowerCase();
+                if (title.includes('michael')) return m.id === 936075;
+                return m.backdrop_path && m.backdrop_path.length > 5;
+              })} onMovieClick={handleMovieClick} />
+              <Row title="Scary Movies" movies={horrorMovies.filter(m => {
+                const title = (m.title || m.name || '').toLowerCase();
+                if (title.includes('michael')) return m.id === 936075;
+                return m.backdrop_path && m.backdrop_path.length > 5;
+              })} onMovieClick={handleMovieClick} />
+              <Row title="Romance" movies={romanceMovies.filter(m => {
+                const title = (m.title || m.name || '').toLowerCase();
+                if (title.includes('michael')) return m.id === 936075;
+                return m.backdrop_path && m.backdrop_path.length > 5;
+              })} onMovieClick={handleMovieClick} />
+              <Row title="Documentaries" movies={documentaries.filter(m => {
+                const title = (m.title || m.name || '').toLowerCase();
+                if (title.includes('michael')) return m.id === 936075;
+                return m.backdrop_path && m.backdrop_path.length > 5;
+              })} onMovieClick={handleMovieClick} />
             </section>
           </>
         )}

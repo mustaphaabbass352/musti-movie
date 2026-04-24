@@ -176,12 +176,11 @@
                 
                 // Filter out results without images and broken Michael entries
                 const results = data.results.filter(movie => {
-                    const hasImage = movie.poster_path || movie.backdrop_path;
                     const title = (movie.title || movie.name || '').toLowerCase();
-                    if (title === 'michael') {
+                    if (title.includes('michael')) {
                         return movie.id === 936075;
                     }
-                    return hasImage;
+                    return movie.poster_path || movie.backdrop_path;
                 });
 
                 // UI Changes
@@ -249,12 +248,11 @@
 
             // Filter logic for grids
             const filterMovies = (list) => list.filter(movie => {
-                const hasImage = movie.backdrop_path || movie.poster_path;
                 const title = (movie.title || movie.name || '').toLowerCase();
-                if (title === 'michael') {
+                if (title.includes('michael')) {
                     return movie.id === 936075;
                 }
-                return hasImage;
+                return movie.backdrop_path || movie.poster_path;
             });
 
             trending = filterMovies(trending);
