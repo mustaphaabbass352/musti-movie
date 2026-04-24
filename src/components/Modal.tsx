@@ -26,7 +26,7 @@ const Modal = ({ showModal, setShowModal, movie }: Props) => {
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  const url = `https://vidsrc.net/embed/${mediaType}/${movieId}`;
+  const url = `https://vidsrc.to/embed/${mediaType}/${movieId}`;
 
   const handleRefresh = () => {
     setIframeKey(prev => prev + 1);

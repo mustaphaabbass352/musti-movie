@@ -89,6 +89,14 @@ const MainContent = ({
 
   const heroMovie = trendingNow[Math.floor(Math.random() * trendingNow.length)];
 
+  const michaelMovie = {
+    id: 1022789,
+    title: "Michael",
+    overview: "Discover the making of a king. The story of Michael Jackson, one of the most influential artists the world has ever known, and his life beyond the music.",
+    backdrop_path: "/michael-backdrop.webp",
+    media_type: "movie"
+  };
+
   return (
     <div className={`relative min-h-screen bg-[#141414] ${theme.specialStyle}`}>
       {theme.eventName === 'Michael' && (
@@ -150,13 +158,16 @@ const MainContent = ({
           </div>
         ) : (
           <>
-            <Hero movie={heroMovie} onPlayClick={() => handleMovieClick(heroMovie)} />
+            <Hero 
+              movie={theme.eventName === 'Michael' ? michaelMovie : heroMovie} 
+              onPlayClick={() => handleMovieClick(theme.eventName === 'Michael' ? michaelMovie : heroMovie)} 
+            />
             
             <section className="md:space-y-24 -mt-16 lg:-mt-32 relative z-10">
               {watchHistory.length > 0 && (
                 <Row title="Continue Watching" movies={watchHistory} onMovieClick={handleMovieClick} />
               )}
-              <Row title="Trending Now" movies={trendingNow} onMovieClick={handleMovieClick} />
+              <Row title="Trending Now" movies={theme.eventName === 'Michael' ? [michaelMovie, ...trendingNow] : trendingNow} onMovieClick={handleMovieClick} />
               <Row title="Top Rated" movies={topRated} onMovieClick={handleMovieClick} />
               <Row title="Action Thrillers" movies={actionMovies} onMovieClick={handleMovieClick} />
               <Row title="Comedies" movies={comedyMovies} onMovieClick={handleMovieClick} />

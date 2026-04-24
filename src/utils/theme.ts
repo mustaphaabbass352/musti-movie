@@ -11,7 +11,8 @@ export const getActiveEvent = () => {
       color: "text-[#FFD700]",            // MJ Gold
       accent: "bg-[#FFD700]",
       secondary: "text-white",
-      backdrop: "/michael-backdrop.webp" // Your custom Michael biopic image
+      backdrop: "/michael-backdrop.webp", // Your custom Michael biopic image
+      movieId: 1022789
     },
     {
       name: "Deadpool & Wolverine",
@@ -44,5 +45,6 @@ export const getThemeConfig = () => {
     hoverColor: activeEvent ? `hover:opacity-80` : "hover:text-red-500",
     specialStyle: activeEvent?.name === "Michael" ? "michael-theme" : "",
     eventBackdrop: (activeEvent as any)?.backdrop || "",
+    eventMovieId: (activeEvent as any)?.movieId || null,
   };
 };
