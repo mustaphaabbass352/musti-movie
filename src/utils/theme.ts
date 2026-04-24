@@ -12,7 +12,7 @@ export const getActiveEvent = () => {
       accent: "bg-[#FFD700]",
       secondary: "text-white",
       backdrop: "/michael-backdrop.webp", // Your custom Michael biopic image
-      movieId: 1022789
+      movieId: 936075
     },
     {
       name: "Deadpool & Wolverine",

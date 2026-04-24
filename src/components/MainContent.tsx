@@ -90,7 +90,7 @@ const MainContent = ({
   const heroMovie = trendingNow[Math.floor(Math.random() * trendingNow.length)];
 
   const michaelMovie = {
-    id: 1022789,
+    id: 936075,
     title: "Michael",
     overview: "Discover the making of a king. The story of Michael Jackson, one of the most influential artists the world has ever known, and his life beyond the music.",
     backdrop_path: "/michael-backdrop.webp",
