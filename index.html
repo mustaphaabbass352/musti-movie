@@ -177,10 +177,13 @@
                 // Filter out results without images and broken Michael entries
                 const results = data.results.filter(movie => {
                     const title = (movie.title || movie.name || '').toLowerCase();
+                    const imagePath = movie.poster_path || movie.backdrop_path;
+                    const hasValidImage = imagePath && imagePath.length > 5 && !imagePath.includes('michael-backdrop');
+                    
                     if (title.includes('michael')) {
-                        return movie.id === 936075;
+                        return movie.id === 936075 && hasValidImage;
                     }
-                    return movie.poster_path || movie.backdrop_path;
+                    return hasValidImage;
                 });
 
                 // UI Changes
@@ -249,10 +252,13 @@
             // Filter logic for grids
             const filterMovies = (list) => list.filter(movie => {
                 const title = (movie.title || movie.name || '').toLowerCase();
+                const imagePath = movie.backdrop_path || movie.poster_path;
+                const hasValidImage = imagePath && imagePath.length > 5 && !imagePath.includes('michael-backdrop');
+                
                 if (title.includes('michael')) {
-                    return movie.id === 936075;
+                    return movie.id === 936075 && hasValidImage;
                 }
-                return movie.backdrop_path || movie.poster_path;
+                return hasValidImage;
             });
 
             trending = filterMovies(trending);
