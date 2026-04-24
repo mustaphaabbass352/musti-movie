@@ -39,15 +39,16 @@ const MainContent = ({
     const savedHistory = localStorage.getItem('musti-watch-history');
     if (savedHistory) {
       const history = JSON.parse(savedHistory);
-      // Filter out Arabic movies from history
+      // Filter out Arabic movies and movies without images from history
       const filteredHistory = history.filter((movie: any) => {
         const title = (movie.title || movie.name || '').toLowerCase();
+        const hasImage = movie.backdrop_path || movie.poster_path;
         const isArabic = movie.original_language === 'ar' || 
                          title.includes('omar & salma') || 
                          title === 'restart' || 
                          title === 'love story' ||
                          title === 'the suit';
-        return !isArabic;
+        return !isArabic && hasImage;
       });
       setWatchHistory(filteredHistory);
       localStorage.setItem('musti-watch-history', JSON.stringify(filteredHistory));
@@ -80,7 +81,9 @@ const MainContent = ({
     try {
       const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`);
       const data = await res.json();
-      setSearchResults(data.results || []);
+      // Filter out results without images
+      const filteredResults = (data.results || []).filter((m: any) => m.backdrop_path || m.poster_path);
+      setSearchResults(filteredResults);
       window.scrollTo(0, 0);
     } catch (error) {
       console.error('Search error:', error);
@@ -167,13 +170,22 @@ const MainContent = ({
               {watchHistory.length > 0 && (
                 <Row title="Continue Watching" movies={watchHistory} onMovieClick={handleMovieClick} />
               )}
-              <Row title="Trending Now" movies={theme.eventName === 'Michael' ? [michaelMovie, ...trendingNow] : trendingNow} onMovieClick={handleMovieClick} />
-              <Row title="Top Rated" movies={topRated} onMovieClick={handleMovieClick} />
-              <Row title="Action Thrillers" movies={actionMovies} onMovieClick={handleMovieClick} />
-              <Row title="Comedies" movies={comedyMovies} onMovieClick={handleMovieClick} />
-              <Row title="Scary Movies" movies={horrorMovies} onMovieClick={handleMovieClick} />
-              <Row title="Romance" movies={romanceMovies} onMovieClick={handleMovieClick} />
-              <Row title="Documentaries" movies={documentaries} onMovieClick={handleMovieClick} />
+              <Row 
+                title="Trending Now" 
+                movies={
+                  (theme.eventName === 'Michael' 
+                    ? [michaelMovie, ...trendingNow] 
+                    : trendingNow
+                  ).filter(m => m.backdrop_path || m.poster_path)
+                } 
+                onMovieClick={handleMovieClick} 
+              />
+              <Row title="Top Rated" movies={topRated.filter(m => m.backdrop_path || m.poster_path)} onMovieClick={handleMovieClick} />
+              <Row title="Action Thrillers" movies={actionMovies.filter(m => m.backdrop_path || m.poster_path)} onMovieClick={handleMovieClick} />
+              <Row title="Comedies" movies={comedyMovies.filter(m => m.backdrop_path || m.poster_path)} onMovieClick={handleMovieClick} />
+              <Row title="Scary Movies" movies={horrorMovies.filter(m => m.backdrop_path || m.poster_path)} onMovieClick={handleMovieClick} />
+              <Row title="Romance" movies={romanceMovies.filter(m => m.backdrop_path || m.poster_path)} onMovieClick={handleMovieClick} />
+              <Row title="Documentaries" movies={documentaries.filter(m => m.backdrop_path || m.poster_path)} onMovieClick={handleMovieClick} />
             </section>
           </>
         )}
