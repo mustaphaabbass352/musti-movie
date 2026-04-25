@@ -42,16 +42,23 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
       {/* Content Container */}
       <div className="relative z-10 px-4 lg:px-16 space-y-6 pb-12">
         <h1 className={`text-5xl font-bold md:text-7xl lg:text-9xl max-w-4xl tracking-tight uppercase ${theme.isEventActive ? theme.primaryColor : 'text-white'} shadow-sm transition-all duration-500`}>
-          {theme.eventName === 'Michael' ? 'MICHAEL' : (movie?.title || movie?.name)}
+          {theme.eventName === 'Michael' && movie.id === 936075 ? 'MICHAEL' : (movie?.title || movie?.name)}
         </h1>
-        {theme.eventName === 'Michael' && (
-          <div className="flex items-center space-x-4">
-            <p className="text-[#FFD700] text-xl md:text-3xl font-black uppercase tracking-widest animate-pulse">
-              Now Streaming
-            </p>
-            <span className="px-2 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold rounded">HD</span>
-          </div>
-        )}
+        <div className="flex items-center space-x-4">
+          {theme.eventName === 'Michael' && movie.id === 936075 ? (
+            <>
+              <p className="text-[#FFD700] text-xl md:text-3xl font-black uppercase tracking-widest animate-pulse">
+                Now Streaming
+              </p>
+              <span className="px-2 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold rounded">HD</span>
+            </>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <span className="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-sm uppercase tracking-tighter">Weekly Spotlight</span>
+              <span className="px-2 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-gray-300 text-xs font-medium rounded">Top Trending</span>
+            </div>
+          )}
+        </div>
         <p className="max-w-xs text-sm text-shadow-md md:max-w-lg md:text-xl lg:max-w-3xl lg:text-2xl line-clamp-3 text-gray-200 font-medium">
           {theme.eventName === 'Michael' 
             ? "Discover the making of a king. The story of Michael Jackson, one of the most influential artists the world has ever known, and his life beyond the music." 
