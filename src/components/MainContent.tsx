@@ -99,7 +99,21 @@ const MainContent = ({
     }
   };
 
-  const heroMovie = trendingNow[Math.floor(Math.random() * trendingNow.length)];
+  // Get current week of the year for rotating hero
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const diff = now.getTime() - start.getTime();
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  const weekOfYear = Math.floor(dayOfYear / 7);
+
+  // Filter trending to ensure valid images and no broken Michaels
+  const filteredTrending = trendingNow.filter((m: any) => {
+    const title = (m.title || m.name || '').toLowerCase();
+    const hasValidImage = m.backdrop_path && m.backdrop_path.length > 5 && !m.backdrop_path.includes('michael-backdrop');
+    if (title.includes('michael')) return m.id === 936075 && hasValidImage;
+    return hasValidImage;
+  });
 
   const michaelMovie = {
     id: 936075,
@@ -108,6 +122,15 @@ const MainContent = ({
     backdrop_path: "/michael-backdrop.webp",
     media_type: "movie"
   };
+
+  // Weekly rotation: Pick a movie from the top 5 trending based on the week
+  let heroMovie;
+  if (filteredTrending.length > 0) {
+    const rotationIndex = weekOfYear % Math.min(filteredTrending.length, 5);
+    heroMovie = filteredTrending[rotationIndex];
+  } else {
+    heroMovie = michaelMovie;
+  }
 
   return (
     <div className={`relative min-h-screen bg-[#141414] ${theme.specialStyle}`}>
