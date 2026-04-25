@@ -123,10 +123,11 @@ const MainContent = ({
     media_type: "movie"
   };
 
-  // Weekly rotation: Pick a movie from the top 5 trending based on the week
+  // Weekly rotation: Pick a movie from the top 10 trending based on the week
   let heroMovie;
   if (filteredTrending.length > 0) {
-    const rotationIndex = weekOfYear % Math.min(filteredTrending.length, 5);
+    // We use % 10 to rotate through a wider variety of movies
+    const rotationIndex = weekOfYear % Math.min(filteredTrending.length, 10);
     heroMovie = filteredTrending[rotationIndex];
   } else {
     heroMovie = michaelMovie;

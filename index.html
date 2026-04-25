@@ -274,8 +274,8 @@
 
             // Setup Hero
             if (trending.length > 0) {
-                // Pick a movie from top 5 trending based on week number
-                const rotationIndex = weekOfYear % Math.min(trending.length, 5);
+                // Pick a movie from top 10 trending based on week number
+                const rotationIndex = weekOfYear % Math.min(trending.length, 10);
                 const heroMovie = trending[rotationIndex];
                 
                 const heroEl = document.getElementById('hero');
