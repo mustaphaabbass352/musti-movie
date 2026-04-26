@@ -58,6 +58,12 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
     setIframeKey(prev => prev + 1); // Reload iframe with new time
   };
 
+  const nextEpisode = () => {
+    setEpisode(prev => prev + 1);
+    setTimeOffset(0);
+    setIframeKey(prev => prev + 1);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
       <div className="absolute top-6 right-6 flex items-center space-x-3 z-50">
@@ -130,30 +136,28 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
           allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; gyroscope; accelerometer"
         ></iframe>
 
-        {/* Skip Controls Overlay */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          <button 
-            onClick={(e) => { e.stopPropagation(); skipTime(30); }}
-            className="pointer-events-auto flex items-center space-x-2 px-4 py-2 bg-black/80 hover:bg-white/20 text-white rounded-full border border-white/30 backdrop-blur-md transition text-xs font-bold"
-          >
-            <Forward className="h-4 w-4" />
-            <span>Skip Recap</span>
-          </button>
-          <button 
-            onClick={(e) => { e.stopPropagation(); skipTime(85); }}
-            className="pointer-events-auto flex items-center space-x-2 px-4 py-2 bg-black/80 hover:bg-white/20 text-white rounded-full border border-white/30 backdrop-blur-md transition text-xs font-bold"
-          >
-            <Forward className="h-4 w-4" />
-            <span>Skip Intro</span>
-          </button>
-          <button 
-            onClick={(e) => { e.stopPropagation(); skipTime(180); }}
-            className="pointer-events-auto flex items-center space-x-2 px-4 py-2 bg-black/80 hover:bg-white/20 text-white rounded-full border border-white/30 backdrop-blur-md transition text-xs font-bold"
-          >
-            <Forward className="h-4 w-4" />
-            <span>Skip Credits</span>
-          </button>
-        </div>
+        {/* Netflix-style Skip Controls Overlay (TV Shows Only) */}
+        {mediaType === 'tv' && (
+          <div className="absolute bottom-16 right-10 flex flex-col space-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <button 
+              onClick={(e) => { e.stopPropagation(); skipTime(85); }}
+              className="pointer-events-auto flex items-center space-x-3 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/40 backdrop-blur-lg transition-all duration-300 text-lg font-medium tracking-wide shadow-2xl"
+              style={{ minWidth: '180px' }}
+            >
+              <Forward className="h-6 w-6" />
+              <span>Skip Intro</span>
+            </button>
+            
+            <button 
+              onClick={(e) => { e.stopPropagation(); nextEpisode(); }}
+              className="pointer-events-auto flex items-center space-x-3 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/40 backdrop-blur-lg transition-all duration-300 text-lg font-medium tracking-wide shadow-2xl"
+              style={{ minWidth: '180px' }}
+            >
+              <Forward className="h-6 w-6" />
+              <span>Next Episode</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
