@@ -15,14 +15,27 @@ interface Props {
 const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist }: Props) => {
   const [iframeKey, setIframeKey] = useState(0);
   const [timeOffset, setTimeOffset] = useState(0);
+  const [season, setSeason] = useState(1);
+  const [episode, setEpisode] = useState(1);
   const theme = getThemeConfig();
 
-  const provider = { name: 'Server 1', url: (type: string, id: string) => `https://vidsrc.me/embed/${type}?tmdb=${id}` };
+  // We'll use vidsrc.to as the primary one because it supports seeking and season/episode parameters more reliably
+  const provider = { 
+    name: 'Server 1', 
+    url: (type: string, id: string, s?: number, e?: number) => {
+      if (type === 'tv') {
+        return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
+      }
+      return `https://vidsrc.to/embed/movie/${id}`;
+    }
+  };
 
   useEffect(() => {
     if (showModal) {
       setIframeKey(prev => prev + 1);
       setTimeOffset(0); // Reset time offset
+      setSeason(1); // Default to season 1
+      setEpisode(1); // Default to episode 1
     }
   }, [showModal]);
 
@@ -32,9 +45,9 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  // Some providers support ?t= or &t= seconds. We add it to the URL.
-  // We use &t= because most of these providers already have ? in their base URL.
-  const url = `${provider.url(mediaType, movieId)}${timeOffset > 0 ? `&t=${timeOffset}` : ''}`;
+  // vidsrc.to uses ?t= for time seeking.
+  const baseUrl = provider.url(mediaType, movieId, season, episode);
+  const url = `${baseUrl}${timeOffset > 0 ? `?t=${timeOffset}` : ''}`;
 
   const handleRefresh = () => {
     setIframeKey(prev => prev + 1);
@@ -70,6 +83,42 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
           <X className="h-8 w-8" />
         </button>
       </div>
+
+      {mediaType === 'tv' && (
+        <div className="absolute bottom-6 left-6 z-50 flex items-center space-x-4 bg-black/60 p-3 rounded-xl border border-white/20 backdrop-blur-md shadow-2xl">
+          <div className="flex flex-col">
+            <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 ml-1">Season</label>
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={() => setSeason(Math.max(1, season - 1))}
+                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded text-white text-sm transition"
+              >-</button>
+              <span className={`text-lg font-bold min-w-[20px] text-center ${theme.isEventActive ? theme.primaryColor : 'text-red-500'}`}>{season}</span>
+              <button 
+                onClick={() => setSeason(season + 1)}
+                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded text-white text-sm transition"
+              >+</button>
+            </div>
+          </div>
+          
+          <div className="w-px h-10 bg-white/10 mx-2" />
+
+          <div className="flex flex-col">
+            <label className="text-[10px] uppercase font-bold text-gray-400 mb-1 ml-1">Episode</label>
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={() => setEpisode(Math.max(1, episode - 1))}
+                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded text-white text-sm transition"
+              >-</button>
+              <span className={`text-lg font-bold min-w-[20px] text-center ${theme.isEventActive ? theme.primaryColor : 'text-red-500'}`}>{episode}</span>
+              <button 
+                onClick={() => setEpisode(episode + 1)}
+                className="px-2 py-1 bg-white/10 hover:bg-white/20 rounded text-white text-sm transition"
+              >+</button>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative border border-white/5 flex items-center justify-center group">
         <iframe 
