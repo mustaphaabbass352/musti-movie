@@ -1,8 +1,10 @@
 'use client'
 
 import { X, RefreshCcw, Plus, Check, Forward } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getThemeConfig } from '@/utils/theme';
+
+const INTRO_END_TIME = 90; // Default skip to 1:30
 
 interface Props {
   showModal: boolean;
@@ -17,6 +19,9 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   const [timeOffset, setTimeOffset] = useState(0);
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
+  const [showSkipButton, setShowSkipButton] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const theme = getThemeConfig();
 
   const provider = { 
@@ -33,10 +38,35 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   useEffect(() => {
     if (showModal) {
       setIframeKey(prev => prev + 1);
-      setTimeOffset(0); // Reset time offset
-      setSeason(1); // Default to season 1
-      setEpisode(1); // Default to episode 1
+      setTimeOffset(0);
+      setSeason(1);
+      setEpisode(1);
+      setShowSkipButton(false);
+      
+      // Check session storage if already skipped for this movie
+      const hasSkipped = sessionStorage.getItem(`skipped_${movie?.id}`);
+      if (!hasSkipped) {
+        const timer = setTimeout(() => {
+          setShowSkipButton(true);
+        }, 3000); // 3 seconds delay
+        return () => clearTimeout(timer);
+      }
     }
+  }, [showModal, movie?.id]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.5 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
   }, [showModal]);
 
   if (!showModal || !movie) return null;
@@ -48,6 +78,13 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   // Try multiple common time parameters to increase compatibility
   const timeParams = timeOffset > 0 ? `&t=${timeOffset}&start=${timeOffset}` : '';
   const url = `${provider.url(mediaType, movieId, season, episode)}${timeParams}`;
+
+  const handleSkipIntro = () => {
+    sessionStorage.setItem(`skipped_${movie?.id}`, 'true');
+    setShowSkipButton(false);
+    setTimeOffset(INTRO_END_TIME);
+    setIframeKey(prev => prev + 1); // Reload iframe with new time
+  };
 
   const handleRefresh = () => {
     setIframeKey(prev => prev + 1);
@@ -65,7 +102,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm overflow-y-auto">
       <div className="absolute top-6 right-6 flex items-center space-x-3 z-50">
         <button 
           onClick={() => toggleWatchlist(movie)}
@@ -126,7 +163,10 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
         </div>
       )}
       
-      <div className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative border border-white/5 flex items-center justify-center group">
+      <div 
+        ref={containerRef}
+        className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative border border-white/5 flex items-center justify-center group"
+      >
         <iframe 
           key={iframeKey}
           src={url} 
@@ -136,31 +176,35 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
           allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; gyroscope; accelerometer"
         ></iframe>
 
-        {/* Netflix-style Skip Controls Overlay (TV Shows Only) */}
-        {mediaType === 'tv' && (
-          <div className="absolute bottom-16 right-10 flex flex-col space-y-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <button 
-              onClick={(e) => { e.stopPropagation(); skipTime(85); }}
-              className="pointer-events-auto flex items-center space-x-3 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/40 backdrop-blur-lg transition-all duration-300 text-lg font-medium tracking-wide shadow-2xl"
-              style={{ minWidth: '180px' }}
-            >
-              <Forward className="h-6 w-6" />
-              <span>Skip Intro</span>
-            </button>
-            
+        {/* Netflix-style Skip Intro Button */}
+        <div 
+          className={`absolute bottom-[15%] right-0 mb-4 mr-0 flex flex-col items-end space-y-4 transition-all duration-500 transform ${
+            showSkipButton && isVisible 
+              ? 'opacity-100 translate-x-0' 
+              : 'opacity-0 translate-x-full pointer-events-none'
+          }`}
+        >
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleSkipIntro(); }}
+            className="bg-black/70 hover:brightness-125 text-white font-bold py-2 px-6 border-2 border-white rounded-l-md transition-all duration-300 backdrop-blur-sm min-h-[44px] text-lg sm:text-xl flex items-center space-x-2 shadow-2xl"
+          >
+            <Forward className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span>SKIP INTRO</span>
+          </button>
+          
+          {mediaType === 'tv' && (
             <button 
               onClick={(e) => { e.stopPropagation(); nextEpisode(); }}
-              className="pointer-events-auto flex items-center space-x-3 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/40 backdrop-blur-lg transition-all duration-300 text-lg font-medium tracking-wide shadow-2xl"
-              style={{ minWidth: '180px' }}
+              className="bg-black/70 hover:brightness-125 text-white font-bold py-2 px-6 border-2 border-white rounded-l-md transition-all duration-300 backdrop-blur-sm min-h-[44px] text-lg sm:text-xl flex items-center space-x-2 shadow-2xl"
             >
-              <Forward className="h-6 w-6" />
-              <div className="flex flex-col items-start">
-                <span>Next Episode</span>
+              <Forward className="h-5 w-5 sm:h-6 sm:w-6" />
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-sm sm:text-base uppercase">Next Episode</span>
                 <span className="text-[10px] opacity-60 uppercase font-bold tracking-tighter">S{season} E{episode + 1}</span>
               </div>
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
