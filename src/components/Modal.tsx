@@ -19,14 +19,14 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   const [episode, setEpisode] = useState(1);
   const theme = getThemeConfig();
 
-  // We'll use vidsrc.to as the primary one because it supports seeking and season/episode parameters more reliably
   const provider = { 
     name: 'Server 1', 
     url: (type: string, id: string, s?: number, e?: number) => {
       if (type === 'tv') {
-        return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
+        // vidsrc.me often handles time parameters better with &t= or &start=
+        return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
       }
-      return `https://vidsrc.to/embed/movie/${id}`;
+      return `https://vidsrc.me/embed/movie?tmdb=${id}`;
     }
   };
 
@@ -45,9 +45,9 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   const mediaType = movie?.media_type || (movie?.title ? 'movie' : 'tv');
   const movieId = movie?.id;
 
-  // vidsrc.to uses ?t= for time seeking.
-  const baseUrl = provider.url(mediaType, movieId, season, episode);
-  const url = `${baseUrl}${timeOffset > 0 ? `?t=${timeOffset}` : ''}`;
+  // Try multiple common time parameters to increase compatibility
+  const timeParams = timeOffset > 0 ? `&t=${timeOffset}&start=${timeOffset}` : '';
+  const url = `${provider.url(mediaType, movieId, season, episode)}${timeParams}`;
 
   const handleRefresh = () => {
     setIframeKey(prev => prev + 1);
@@ -154,7 +154,10 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
               style={{ minWidth: '180px' }}
             >
               <Forward className="h-6 w-6" />
-              <span>Next Episode</span>
+              <div className="flex flex-col items-start">
+                <span>Next Episode</span>
+                <span className="text-[10px] opacity-60 uppercase font-bold tracking-tighter">S{season} E{episode + 1}</span>
+              </div>
             </button>
           </div>
         )}
