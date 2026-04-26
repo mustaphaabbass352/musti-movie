@@ -1,6 +1,6 @@
 'use client'
 
-import { Play, Info } from 'lucide-react';
+import { Play, Plus, Check } from 'lucide-react';
 import { getThemeConfig } from '@/utils/theme';
 
 interface Movie {
@@ -12,7 +12,14 @@ interface Movie {
   media_type?: string;
 }
 
-const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void }) => {
+interface Props {
+  movie: Movie;
+  onPlayClick: () => void;
+  toggleWatchlist: (movie: any) => void;
+  isInWatchlist: boolean;
+}
+
+const Hero = ({ movie, onPlayClick, toggleWatchlist, isInWatchlist }: Props) => {
   const theme = getThemeConfig();
   if (!movie) return null;
 
@@ -73,9 +80,12 @@ const Hero = ({ movie, onPlayClick }: { movie: Movie; onPlayClick: () => void })
             <Play className={`h-4 w-4 fill-black text-black md:h-7 md:w-7`} />
             Play
           </button>
-          <button className="flex items-center gap-x-2 rounded bg-gray-500/70 px-8 py-3 text-sm font-bold text-white transition hover:bg-gray-500/40 md:text-xl shadow-lg border border-white/10">
-            <Info className="h-5 w-5 md:h-8 md:w-8" />
-            More Info
+          <button 
+            onClick={() => toggleWatchlist(movie)}
+            className="flex items-center gap-x-2 rounded bg-gray-500/70 px-8 py-3 text-sm font-bold text-white transition hover:bg-gray-500/40 md:text-xl shadow-lg border border-white/10"
+          >
+            {isInWatchlist ? <Check className="h-5 w-5 md:h-8 md:w-8" /> : <Plus className="h-5 w-5 md:h-8 md:w-8" />}
+            {isInWatchlist ? 'In Watchlist' : 'Watchlist'}
           </button>
         </div>
       </div>

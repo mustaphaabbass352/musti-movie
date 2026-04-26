@@ -32,11 +32,18 @@ const MainContent = ({
   const [searchResults, setSearchResults] = useState<any[] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [watchHistory, setWatchHistory] = useState<any[]>([]);
+  const [watchlist, setWatchlist] = useState<any[]>([]);
   const theme = getThemeConfig();
 
-  // Load watch history from localStorage on mount
+  // Load watch history and watchlist from localStorage on mount
   useEffect(() => {
     const savedHistory = localStorage.getItem('musti-watch-history');
+    const savedWatchlist = localStorage.getItem('musti-watchlist');
+
+    if (savedWatchlist) {
+      setWatchlist(JSON.parse(savedWatchlist));
+    }
+
     if (savedHistory) {
       const history = JSON.parse(savedHistory);
       // Filter out Arabic movies and movies without images or broken Michael entries
@@ -75,6 +82,20 @@ const MainContent = ({
       const newHistory = [movie, ...filtered].slice(0, 20); // Keep last 20 movies
       localStorage.setItem('musti-watch-history', JSON.stringify(newHistory));
       return newHistory;
+    });
+  };
+
+  const toggleWatchlist = (movie: any) => {
+    setWatchlist((prev) => {
+      const isAlreadyInWatchlist = prev.some((m) => m.id === movie.id);
+      let newWatchlist;
+      if (isAlreadyInWatchlist) {
+        newWatchlist = prev.filter((m) => m.id !== movie.id);
+      } else {
+        newWatchlist = [movie, ...prev];
+      }
+      localStorage.setItem('musti-watchlist', JSON.stringify(newWatchlist));
+      return newWatchlist;
     });
   };
 
@@ -197,9 +218,14 @@ const MainContent = ({
             <Hero 
               movie={theme.eventName === 'Michael' ? michaelMovie : heroMovie} 
               onPlayClick={() => handleMovieClick(theme.eventName === 'Michael' ? michaelMovie : heroMovie)} 
+              toggleWatchlist={toggleWatchlist}
+              isInWatchlist={watchlist.some(m => m.id === (theme.eventName === 'Michael' ? michaelMovie.id : heroMovie?.id))}
             />
             
             <section className="md:space-y-24 -mt-16 lg:-mt-32 relative z-10">
+              {watchlist.length > 0 && (
+                <Row title="My Watchlist" movies={watchlist} onMovieClick={handleMovieClick} />
+              )}
               {watchHistory.length > 0 && (
                 <Row title="Continue Watching" movies={watchHistory} onMovieClick={handleMovieClick} />
               )}
@@ -262,7 +288,13 @@ const MainContent = ({
         )}
       </main>
 
-      <Modal showModal={showModal} setShowModal={setShowModal} movie={selectedMovie} />
+      <Modal 
+        showModal={showModal} 
+        setShowModal={setShowModal} 
+        movie={selectedMovie} 
+        toggleWatchlist={toggleWatchlist}
+        isInWatchlist={watchlist.some(m => m.id === selectedMovie?.id)}
+      />
     </div>
   );
 };
