@@ -233,7 +233,7 @@ const MainContent = ({
                 if (title.includes('michael')) return m.id === 936075 && hasValidImage;
                 return hasValidImage;
               })} onMovieClick={handleMovieClick} />
-              <Row title="Com comedies" movies={comedyMovies.filter(m => {
+              <Row title="Comedies" movies={comedyMovies.filter(m => {
                 const title = (m.title || m.name || '').toLowerCase();
                 const hasValidImage = m.backdrop_path && m.backdrop_path.length > 5 && !m.backdrop_path.includes('michael-backdrop');
                 if (title.includes('michael')) return m.id === 936075 && hasValidImage;
