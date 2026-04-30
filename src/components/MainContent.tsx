@@ -111,8 +111,18 @@ const MainContent = ({
     try {
       const res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`);
       const data = await res.json();
-      // Filter out results without images
-      const filteredResults = (data.results || []).filter((m: any) => m.backdrop_path || m.poster_path);
+      // Filter out results without images and excluded documentaries
+      const filteredResults = (data.results || []).filter((m: any) => {
+        const hasImage = m.backdrop_path || m.poster_path;
+        const title = (m.title || m.name || '').toLowerCase();
+        const excludedTitles = [
+          'hot girls wanted',
+          'after porn ends 2',
+          'money shot: the pornhub story'
+        ];
+        const isExcluded = excludedTitles.some(excluded => title.includes(excluded));
+        return hasImage && !isExcluded;
+      });
       setSearchResults(filteredResults);
       window.scrollTo(0, 0);
     } catch (error) {
@@ -281,7 +291,16 @@ const MainContent = ({
                 const title = (m.title || m.name || '').toLowerCase();
                 const hasValidImage = m.backdrop_path && m.backdrop_path.length > 5 && !m.backdrop_path.includes('michael-backdrop');
                 if (title.includes('michael')) return m.id === 936075 && hasValidImage;
-                return hasValidImage;
+                
+                // Exclude specific documentaries
+                const excludedTitles = [
+                  'hot girls wanted',
+                  'after porn ends 2',
+                  'money shot: the pornhub story'
+                ];
+                const isExcluded = excludedTitles.some(excluded => title.includes(excluded));
+                
+                return hasValidImage && !isExcluded;
               })} onMovieClick={handleMovieClick} />
             </section>
           </>

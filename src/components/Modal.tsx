@@ -1,6 +1,6 @@
 'use client'
 
-import { X, RefreshCcw, Plus, Check, Forward } from 'lucide-react';
+import { X, RefreshCcw, Plus, Check, Forward, Server } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { getThemeConfig } from '@/utils/theme';
 
@@ -21,19 +21,58 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   const [episode, setEpisode] = useState(1);
   const [showSkipButton, setShowSkipButton] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [currentProvider, setCurrentProvider] = useState(0);
+  const [showProviderMenu, setShowProviderMenu] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const theme = getThemeConfig();
 
-  const provider = { 
-    name: 'Server 1', 
-    url: (type: string, id: string, s?: number, e?: number) => {
-      if (type === 'tv') {
-        // vidsrc.me often handles time parameters better with &t= or &start=
-        return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
+  const providers = [
+    { 
+      name: 'Server 1 (Vidsrc)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
+        }
+        return `https://vidsrc.me/embed/movie?tmdb=${id}`;
       }
-      return `https://vidsrc.me/embed/movie?tmdb=${id}`;
+    },
+    { 
+      name: 'Server 2 (VidSrc Pro', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`;
+        }
+        return `https://vidsrc.pro/embed/movie/${id}`;
+      }
+    },
+    { 
+      name: 'Server 3 (2Embed)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`;
+        }
+        return `https://www.2embed.cc/embed/${id}`;
+      }
+    },
+    { 
+      name: 'Server 4 (MultiEmbed)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://multiembed.mov/directstream.php?video_id=${id}&s=${s}&e=${e}`;
+        }
+        return `https://multiembed.mov/directstream.php?video_id=${id}`;
+      }
+    },
+    { 
+      name: 'Server 5 (Vidplay', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidplay.site/tv/tmdb-${id}-${s}-${e}`;
+        }
+        return `https://vidplay.site/movie/tmdb-${id}`;
+      }
     }
-  };
+  ];
 
   useEffect(() => {
     if (showModal) {
@@ -55,6 +94,10 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   }, [showModal, movie?.id]);
 
   useEffect(() => {
+    setIframeKey(prev => prev + 1);
+  }, [currentProvider]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
@@ -69,6 +112,17 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
     return () => observer.disconnect();
   }, [showModal]);
 
+  // Close provider menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showProviderMenu) {
+        setShowProviderMenu(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showProviderMenu]);
+
   if (!showModal || !movie) return null;
 
   // Robust media type detection
@@ -77,7 +131,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
 
   // Try multiple common time parameters to increase compatibility
   const timeParams = timeOffset > 0 ? `&t=${timeOffset}&start=${timeOffset}` : '';
-  const url = `${provider.url(mediaType, movieId, season, episode)}${timeParams}`;
+  const url = `${providers[currentProvider].url(mediaType, movieId, season, episode)}${timeParams}`;
 
   const handleSkipIntro = () => {
     sessionStorage.setItem(`skipped_${movie?.id}`, 'true');
@@ -104,6 +158,38 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm overflow-y-auto">
       <div className="absolute top-6 right-6 flex items-center space-x-3 z-50">
+        {/* Provider Selection Dropdown */}
+        <div className="relative">
+          <button 
+            onClick={() => setShowProviderMenu(!showProviderMenu)}
+            className={`flex items-center space-x-2 px-4 py-2 bg-black/60 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/10 transition shadow-lg backdrop-blur-md`}
+          >
+            <Server className="h-4 w-4" />
+            <span>{providers[currentProvider].name}</span>
+          </button>
+          
+          {showProviderMenu && (
+            <div className="absolute top-full right-0 mt-2 bg-black/90 backdrop-blur-md rounded-xl border border-white/20 shadow-2xl min-w-[220px] overflow-hidden">
+              {providers.map((provider, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentProvider(index);
+                    setShowProviderMenu(false);
+                  }}
+                  className={`w-full px-4 py-3 text-left text-sm transition hover:bg-white/10 ${
+                    currentProvider === index 
+                      ? 'bg-white/15 text-white font-semibold' 
+                      : 'text-gray-300'
+                  }`}
+                >
+                  {provider.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        
         <button 
           onClick={() => toggleWatchlist(movie)}
           className={`flex items-center space-x-2 px-4 py-2 bg-black/60 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/10 transition shadow-lg backdrop-blur-md`}
