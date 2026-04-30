@@ -28,25 +28,34 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
 
   const providers = [
     { 
-      name: 'Server 1 (Vidsrc)', 
+      name: 'Server 1 (VidSrc.icu)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`;
+          return `https://vidsrc.icu/embed/tv/${id}/${s}/${e}`;
         }
-        return `https://vidsrc.me/embed/movie?tmdb=${id}`;
+        return `https://vidsrc.icu/embed/movie/${id}`;
       }
     },
     { 
-      name: 'Server 2 (VidSrc Pro', 
+      name: 'Server 2 (MultiEmbed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`;
+          return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}`;
         }
-        return `https://vidsrc.pro/embed/movie/${id}`;
+        return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`;
       }
     },
     { 
-      name: 'Server 3 (2Embed)', 
+      name: 'Server 3 (Embed-API)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://player.embed-api.stream/?id=${id}&s=${s}&e=${e}`;
+        }
+        return `https://player.embed-api.stream/?id=${id}`;
+      }
+    },
+    { 
+      name: 'Server 4 (2Embed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`;
@@ -55,16 +64,16 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 4 (MultiEmbed)', 
+      name: 'Server 5 (VidSrc.to)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://multiembed.mov/directstream.php?video_id=${id}&s=${s}&e=${e}`;
+          return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
         }
-        return `https://multiembed.mov/directstream.php?video_id=${id}`;
+        return `https://vidsrc.to/embed/movie/${id}`;
       }
     },
     { 
-      name: 'Server 5 (Vidplay', 
+      name: 'Server 6 (Vidplay)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://vidplay.site/tv/tmdb-${id}-${s}-${e}`;
