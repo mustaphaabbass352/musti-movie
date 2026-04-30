@@ -1,8 +1,9 @@
 'use client'
 
-import { Search, Bell, User } from 'lucide-react';
+import { Search, Bell, User, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getThemeConfig } from '@/utils/theme';
+import AIChat from './AIChat';
 
 interface Props {
   onSearch: (query: string) => void;
@@ -11,6 +12,7 @@ interface Props {
 const Navbar = ({ onSearch }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [query, setQuery] = useState('');
+  const [showAIChat, setShowAIChat] = useState(false);
   const theme = getThemeConfig();
 
   useEffect(() => {
@@ -47,7 +49,19 @@ const Navbar = ({ onSearch }: Props) => {
         </ul>
       </div>
 
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-4">
+        <button 
+          onClick={() => setShowAIChat(true)}
+          className={`flex items-center space-x-2 px-3 py-2 rounded-full border transition-all ${
+            theme.isEventActive 
+              ? theme.primaryColor + ' border-purple-500/50 hover:bg-purple-500/20' 
+              : 'bg-gradient-to-r from-purple-600 to-pink-600 border-transparent hover:from-purple-700 hover:to-pink-700'
+          } text-white text-xs md:text-sm font-medium`}
+        >
+          <Sparkles className="h-4 w-4" />
+          <span className="hidden sm:inline">AI Buddy</span>
+        </button>
+        
         <form onSubmit={handleSearch} className="flex items-center bg-black/40 border border-gray-500 rounded-full px-4 py-1.5 focus-within:border-white transition-all">
           <input 
             type="text" 
@@ -60,6 +74,8 @@ const Navbar = ({ onSearch }: Props) => {
             <Search className="h-4 w-4 text-gray-400 cursor-pointer" />
           </button>
         </form>
+        
+        <AIChat isOpen={showAIChat} setIsOpen={setShowAIChat} />
       </div>
     </nav>
   );
