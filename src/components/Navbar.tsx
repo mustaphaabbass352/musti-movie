@@ -7,9 +7,10 @@ import AIChat from './AIChat';
 
 interface Props {
   onSearch: (query: string) => void;
+  onMovieClick: (movie: any) => void;
 }
 
-const Navbar = ({ onSearch }: Props) => {
+const Navbar = ({ onSearch, onMovieClick }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [query, setQuery] = useState('');
   const [showAIChat, setShowAIChat] = useState(false);
@@ -75,7 +76,7 @@ const Navbar = ({ onSearch }: Props) => {
           </button>
         </form>
         
-        <AIChat isOpen={showAIChat} setIsOpen={setShowAIChat} />
+        <AIChat isOpen={showAIChat} setIsOpen={setShowAIChat} onMovieClick={onMovieClick} />
       </div>
     </nav>
   );

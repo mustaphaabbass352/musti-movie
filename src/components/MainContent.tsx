@@ -184,7 +184,7 @@ const MainContent = ({
           ))}
         </div>
       )}
-      <Navbar onSearch={handleSearch} />
+      <Navbar onSearch={handleSearch} onMovieClick={handleMovieClick} />
       
       <main className="relative pb-24 transition-all duration-500">
         {searchResults ? (
