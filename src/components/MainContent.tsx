@@ -182,6 +182,13 @@ const MainContent = ({
               }}
             />
           ))}
+          {/* Background Music */}
+          <audio
+            src="/billie-jean.mp3"
+            autoPlay
+            loop
+            volume={0.3}
+          />
         </div>
       )}
       <Navbar onSearch={handleSearch} onMovieClick={handleMovieClick} />
