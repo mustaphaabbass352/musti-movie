@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Row from "@/components/Row";
@@ -33,6 +34,8 @@ const MainContent = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [watchHistory, setWatchHistory] = useState<any[]>([]);
   const [watchlist, setWatchlist] = useState<any[]>([]);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const theme = getThemeConfig();
 
   // Load watch history and watchlist from localStorage on mount
@@ -164,6 +167,19 @@ const MainContent = ({
     heroMovie = michaelMovie;
   }
 
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (musicPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(() => {
+          // Browser blocked auto-play, that's okay
+        });
+      }
+      setMusicPlaying(!musicPlaying);
+    }
+  };
+
   return (
     <div className={`relative min-h-screen bg-[#141414] ${theme.specialStyle}`}>
       {theme.eventName === 'Michael' && (
@@ -184,13 +200,28 @@ const MainContent = ({
           ))}
           {/* Background Music */}
           <audio
+            ref={audioRef}
             src="/billie-jean.mp3"
-            autoPlay
             loop
             volume={0.3}
           />
         </div>
       )}
+      
+      {/* Music Control Button */}
+      {theme.eventName === 'Michael' && (
+        <button
+          onClick={toggleMusic}
+          className="fixed bottom-6 left-6 z-50 p-3 bg-[#1a1a1a]/80 backdrop-blur-md border border-[#FFD700]/30 rounded-full shadow-2xl hover:bg-[#FFD700]/20 transition-all"
+        >
+          {musicPlaying ? (
+            <Volume2 className="h-6 w-6 text-[#FFD700]" />
+          ) : (
+            <VolumeX className="h-6 w-6 text-[#FFD700]" />
+          )}
+        </button>
+      )}
+      
       <Navbar onSearch={handleSearch} onMovieClick={handleMovieClick} />
       
       <main className="relative pb-24 transition-all duration-500">
