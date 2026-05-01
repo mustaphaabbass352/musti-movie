@@ -25,17 +25,7 @@ const AIChat = ({ isOpen, setIsOpen }: Props) => {
     if (isOpen && messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: `Hey! 🎬 I'm your movie buddy! Tell me what kind of movies you love and I'll recommend some gems! Here are some things you can say:
-
-- "I love sci-fi and action movies"
-- "Recommend me something like Inception"
-- "I want a good comedy"
-- "Scary movies please!"
-- "Romantic movies that aren't cheesy"
-
-**Quick Setup:** To use me, make sure you added your GROQ_API_KEY in the .env.local file!
-
-What are you in the mood for?`
+        content: `Hey! 🎬 I'm your movie buddy! Let's find the perfect movies for you!`
       }]);
     }
   }, [isOpen, messages.length]);
