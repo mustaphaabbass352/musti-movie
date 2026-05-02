@@ -28,7 +28,25 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
 
   const providers = [
     { 
-      name: 'Server 1 (MultiEmbed)', 
+      name: 'Server 1 (VidSrc.to)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
+        }
+        return `https://vidsrc.to/embed/movie/${id}`;
+      }
+    },
+    { 
+      name: 'Server 2 (VidSrc.icu)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidsrc.icu/embed/tv/${id}/${s}/${e}`;
+        }
+        return `https://vidsrc.icu/embed/movie/${id}`;
+      }
+    },
+    { 
+      name: 'Server 3 (MultiEmbed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}`;
@@ -37,7 +55,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 2 (Embed-API)', 
+      name: 'Server 4 (Embed-API)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://player.embed-api.stream/?id=${id}&s=${s}&e=${e}`;
@@ -46,7 +64,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 3 (Vidplay)', 
+      name: 'Server 5 (Vidplay)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://vidplay.site/tv/tmdb-${id}-${s}-${e}`;
@@ -55,21 +73,12 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 4 (2Embed)', 
+      name: 'Server 6 (2Embed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`;
         }
         return `https://www.2embed.cc/embed/${id}`;
-      }
-    },
-    { 
-      name: 'Server 5 (VidSrc.to)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
-        }
-        return `https://vidsrc.to/embed/movie/${id}`;
       }
     }
   ];
