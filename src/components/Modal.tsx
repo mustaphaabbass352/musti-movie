@@ -28,16 +28,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
 
   const providers = [
     { 
-      name: 'Server 1 (VidSrc.icu)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://vidsrc.icu/embed/tv/${id}/${s}/${e}`;
-        }
-        return `https://vidsrc.icu/embed/movie/${id}`;
-      }
-    },
-    { 
-      name: 'Server 2 (MultiEmbed)', 
+      name: 'Server 1 (MultiEmbed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}`;
@@ -46,12 +37,21 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 3 (Embed-API)', 
+      name: 'Server 2 (Embed-API)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://player.embed-api.stream/?id=${id}&s=${s}&e=${e}`;
         }
         return `https://player.embed-api.stream/?id=${id}`;
+      }
+    },
+    { 
+      name: 'Server 3 (Vidplay)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidplay.site/tv/tmdb-${id}-${s}-${e}`;
+        }
+        return `https://vidplay.site/movie/tmdb-${id}`;
       }
     },
     { 
@@ -70,15 +70,6 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
           return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
         }
         return `https://vidsrc.to/embed/movie/${id}`;
-      }
-    },
-    { 
-      name: 'Server 6 (Vidplay)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://vidplay.site/tv/tmdb-${id}-${s}-${e}`;
-        }
-        return `https://vidplay.site/movie/tmdb-${id}`;
       }
     }
   ];
