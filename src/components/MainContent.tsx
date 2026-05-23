@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -30,6 +30,38 @@ const MainContent = ({
   const [selectedMovie, setSelectedMovie] = useState<any>(null);
   const [searchResults, setSearchResults] = useState<any[] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [watchlist, setWatchlist] = useState<any[]>([]);
+
+  // Load watchlist from localStorage on mount
+  useEffect(() => {
+    const savedWatchlist = localStorage.getItem('musti_watchlist');
+    if (savedWatchlist) {
+      try {
+        setWatchlist(JSON.parse(savedWatchlist));
+      } catch (e) {
+        console.error('Failed to parse watchlist');
+      }
+    }
+  }, []);
+
+  // Save watchlist to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('musti_watchlist', JSON.stringify(watchlist));
+  }, [watchlist]);
+
+  const toggleWatchlist = (movie: any) => {
+    setWatchlist(prev => {
+      const isMovieInWatchlist = prev.find(m => m.id === movie.id);
+      if (isMovieInWatchlist) {
+        return prev.filter(m => m.id !== movie.id);
+      }
+      return [...prev, movie];
+    });
+  };
+
+  const isInWatchlist = (movieId: number) => {
+    return watchlist.some(m => m.id === movieId);
+  };
 
   const handleMovieClick = (movie: any) => {
     setSelectedMovie(movie);
@@ -115,7 +147,13 @@ const MainContent = ({
         )}
       </main>
 
-      <Modal showModal={showModal} setShowModal={setShowModal} movie={selectedMovie} />
+      <Modal 
+        showModal={showModal} 
+        setShowModal={setShowModal} 
+        movie={selectedMovie} 
+        toggleWatchlist={toggleWatchlist}
+        isInWatchlist={selectedMovie ? isInWatchlist(selectedMovie.id) : false}
+      />
     </div>
   );
 };

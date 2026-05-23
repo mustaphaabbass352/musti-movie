@@ -28,7 +28,25 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
 
   const providers = [
     { 
-      name: 'Server 1 (VidSrc.to)', 
+      name: 'Server 1 (VidSrc.pro)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`;
+        }
+        return `https://vidsrc.pro/embed/movie/${id}`;
+      }
+    },
+    { 
+      name: 'Server 2 (VidSrc.cc)', 
+      url: (type: string, id: string, s?: number, e?: number) => {
+        if (type === 'tv') {
+          return `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`;
+        }
+        return `https://vidsrc.cc/v2/embed/movie/${id}`;
+      }
+    },
+    { 
+      name: 'Server 3 (VidSrc.to)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
@@ -37,16 +55,16 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 2 (VidSrc.icu)', 
+      name: 'Server 4 (VidSrc.me)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://vidsrc.icu/embed/tv/${id}/${s}/${e}`;
+          return `https://vidsrc.me/embed/tv?tmdb=${id}&s=${s}&e=${e}`;
         }
-        return `https://vidsrc.icu/embed/movie/${id}`;
+        return `https://vidsrc.me/embed/movie?tmdb=${id}`;
       }
     },
     { 
-      name: 'Server 3 (MultiEmbed)', 
+      name: 'Server 5 (MultiEmbed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
           return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}`;
@@ -55,30 +73,12 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
       }
     },
     { 
-      name: 'Server 4 (Embed-API)', 
+      name: 'Server 6 (AutoEmbed)', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://player.embed-api.stream/?id=${id}&s=${s}&e=${e}`;
+          return `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}`;
         }
-        return `https://player.embed-api.stream/?id=${id}`;
-      }
-    },
-    { 
-      name: 'Server 5 (Vidplay)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://vidplay.site/tv/tmdb-${id}-${s}-${e}`;
-        }
-        return `https://vidplay.site/movie/tmdb-${id}`;
-      }
-    },
-    { 
-      name: 'Server 6 (2Embed)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`;
-        }
-        return `https://www.2embed.cc/embed/${id}`;
+        return `https://player.autoembed.cc/embed/movie/${id}`;
       }
     }
   ];
@@ -269,6 +269,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
           frameBorder="0" 
           allowFullScreen
           allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; gyroscope; accelerometer"
+          sandbox="allow-forms allow-scripts allow-same-origin allow-presentation"
         ></iframe>
 
         {/* Netflix-style Skip Intro Button */}
