@@ -28,57 +28,30 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
 
   const providers = [
     { 
-      name: 'Server 1 (VidSrc.pro)', 
+      name: '2embed.cc', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`;
+          return `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`;
         }
-        return `https://vidsrc.pro/embed/movie/${id}`;
+        return `https://www.2embed.cc/embed/${id}`;
       }
     },
     { 
-      name: 'Server 2 (VidSrc.cc)', 
+      name: 'VidLink', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`;
+          return `https://vidlink.pro/tv/${id}/${s}/${e}`;
         }
-        return `https://vidsrc.cc/v2/embed/movie/${id}`;
+        return `https://vidlink.pro/movie/${id}`;
       }
     },
     { 
-      name: 'Server 3 (VidSrc.to)', 
+      name: '2embed.skin', 
       url: (type: string, id: string, s?: number, e?: number) => {
         if (type === 'tv') {
-          return `https://vidsrc.to/embed/tv/${id}/${s}/${e}`;
+          return `https://www.2embed.skin/embedtv/${id}&s=${s}&e=${e}`;
         }
-        return `https://vidsrc.to/embed/movie/${id}`;
-      }
-    },
-    { 
-      name: 'Server 4 (VidSrc.me)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://vidsrc.me/embed/tv?tmdb=${id}&s=${s}&e=${e}`;
-        }
-        return `https://vidsrc.me/embed/movie?tmdb=${id}`;
-      }
-    },
-    { 
-      name: 'Server 5 (MultiEmbed)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}`;
-        }
-        return `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`;
-      }
-    },
-    { 
-      name: 'Server 6 (AutoEmbed)', 
-      url: (type: string, id: string, s?: number, e?: number) => {
-        if (type === 'tv') {
-          return `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}`;
-        }
-        return `https://player.autoembed.cc/embed/movie/${id}`;
+        return `https://www.2embed.skin/embed/${id}`;
       }
     }
   ];
@@ -170,7 +143,7 @@ const Modal = ({ showModal, setShowModal, movie, toggleWatchlist, isInWatchlist 
         {/* Provider Selection Dropdown */}
         <div className="relative">
           <button 
-            onClick={() => setShowProviderMenu(!showProviderMenu)}
+            onClick={(e) => { e.stopPropagation(); setShowProviderMenu(!showProviderMenu); }}
             className={`flex items-center space-x-2 px-4 py-2 bg-black/60 rounded-full border border-white/20 text-white text-sm font-medium hover:bg-white/10 transition shadow-lg backdrop-blur-md`}
           >
             <Server className="h-4 w-4" />

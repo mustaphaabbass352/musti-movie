@@ -3,29 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Musti Movie - Simple Version</title>
+    <title>Musti Movie</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --theme-bg: #141414;
+            --theme-bg2: #1c1c1c;
+            --theme-accent: #e50914;
+            --theme-accent2: #b20710;
+            --theme-text: #ffffff;
+            --theme-muted: #6b7280;
+            --theme-font: 'Inter', sans-serif;
+            --theme-logo-color: #e50914;
+        }
         body { 
-            background-color: #141414; 
-            color: white; 
-            font-family: 'Inter', sans-serif;
+            background-color: var(--theme-bg);
+            color: var(--theme-text);
+            font-family: var(--theme-font);
             margin: 0;
+            transition: background-color 1s ease;
+            background: transparent !important;
+        }
+        #main-content, #search-results-section {
+            position: relative;
+            z-index: 1;
+        }
+        /* Hero gets a dark overlay so text stays readable */
+        #hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 0;
+        }
+        /* Movie rows get subtle dark bg so cards are readable */
+        .p-10.space-y-12 {
+            background: linear-gradient(to bottom, rgba(10,10,20,0.7), rgba(10,10,20,0.85));
+            position: relative;
+            z-index: 1;
         }
         .movie-card:hover { 
             transform: scale(1.05); 
             transition: transform 0.3s ease; 
         }
-        .scrollbar-hide::-webkit-scrollbar {
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        #theme-banner {
             display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            border-radius: 14px;
+            padding: 14px 18px;
+            font-size: 13px;
+            max-width: 260px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.6);
+            animation: tbIn 0.6s ease forwards;
+        }
+        @keyframes tbIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        #logo-text { transition: color 0.8s ease; }
+
+        /* Mr. Potato Head hand cursor - desktop only */
+        @media (pointer: fine) {
+            * { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3C!-- wrist/cuff --%3E%3Crect x='11' y='26' width='14' height='8' rx='3' fill='%23c8773d' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- palm --%3E%3Crect x='8' y='15' width='20' height='14' rx='5' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- index finger --%3E%3Crect x='20' y='4' width='6' height='14' rx='3' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- middle finger --%3E%3Crect x='13' y='2' width='6' height='15' rx='3' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- ring finger --%3E%3Crect x='6' y='5' width='6' height='13' rx='3' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- thumb --%3E%3Crect x='24' y='14' width='10' height='6' rx='3' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- knuckle lines --%3E%3Cline x1='14' y1='17' x2='22' y2='17' stroke='%238b4a1a' stroke-width='0.8' opacity='0.4'/%3E%3C/svg%3E") 8 4, auto !important; }
+            a, button, [onclick], .movie-card, .star, .wheel-item { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3C!-- wrist/cuff --%3E%3Crect x='11' y='26' width='14' height='8' rx='3' fill='%23c8773d' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- palm --%3E%3Crect x='8' y='15' width='20' height='14' rx='5' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- pointing index finger --%3E%3Crect x='20' y='2' width='6' height='16' rx='3' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- curled middle finger --%3E%3Crect x='13' y='8' width='6' height='9' rx='3' fill='%23c8773d' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- curled ring finger --%3E%3Crect x='6' y='9' width='6' height='8' rx='3' fill='%23c8773d' stroke='%238b4a1a' stroke-width='1'/%3E%3C!-- thumb --%3E%3Crect x='24' y='14' width='10' height='6' rx='3' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3Ccircle cx='23' cy='4' r='3.2' fill='%23d4894a' stroke='%238b4a1a' stroke-width='1'/%3E%3C/svg%3E") 22 4, pointer !important; }
+        }
+
+        /* Mobile tap ripple — Star Burst */
+        .tap-ripple {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            width: 6px;
+            height: 6px;
+            margin-left: -3px;
+            margin-top: -3px;
+            border-radius: 50%;
+            background: #ffd700;
+            animation: starBurst 0.6s ease-out forwards;
+        }
+        .tap-ripple-ring {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            width: 18px;
+            height: 18px;
+            margin-left: -9px;
+            margin-top: -9px;
+            border-radius: 50%;
+            border: 2px solid;
+            animation: webRing 0.5s ease-out forwards;
+        }
+        .tap-web-spokes {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99997;
+            width: 40px;
+            height: 40px;
+            margin-left: -20px;
+            margin-top: -20px;
+            animation: webSpokes 0.45s ease-out forwards;
+        }
+        @keyframes starBurst {
+            0%   { transform: scale(0.3); opacity: 1; background: #ffd700; }
+            50%  { transform: scale(2.5); opacity: 0.8; background: #ff8c00; }
+            100% { transform: scale(5); opacity: 0; }
+        }
+        @keyframes webRing {
+            0%   { transform: scale(0.3); opacity: 1; }
+            50%  { transform: scale(3); opacity: 0.6; }
+            100% { transform: scale(6); opacity: 0; }
+        }
+        @keyframes webSpokes {
+            0%   { transform: scale(0.2) rotate(0deg); opacity: 1; }
+            60%  { transform: scale(1.2) rotate(15deg); opacity: 0.7; }
+            100% { transform: scale(2) rotate(30deg); opacity: 0; }
+        }
+        @keyframes webRing {
+            0%   { transform: scale(0.3); opacity: 1; }
+            50%  { transform: scale(3); opacity: 0.6; }
+            100% { transform: scale(6); opacity: 0; }
+        }
+        @keyframes webSpokes {
+            0%   { transform: scale(0.2) rotate(0deg); opacity: 1; }
+            60%  { transform: scale(1.2) rotate(15deg); opacity: 0.7; }
+            100% { transform: scale(2) rotate(30deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
+    <!-- Toy Story 5 Canvas Background -->
+    <canvas id="stars-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:1;"></canvas>
+
     <!-- Navbar -->
     <nav class="fixed top-0 w-full z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent">
         <div class="flex items-center space-x-10">
-            <h1 class="text-3xl font-bold text-red-600 tracking-tighter cursor-pointer" onclick="location.reload()">MUSTI</h1>
+            <h1 id="logo-text" class="text-3xl font-bold tracking-tighter cursor-pointer" onclick="location.reload()" style="color:var(--theme-accent)">MUSTI</h1>
             <div class="space-x-6 text-sm font-light hidden md:flex">
                 <a href="#" class="hover:text-gray-300">Home</a>
                 <a href="#" class="hover:text-gray-300">Movies</a>
@@ -83,6 +196,16 @@
 
     <!-- Movie Rows -->
     <div class="p-10 space-y-12">
+        <section id="continue-watching-section" class="hidden">
+            <h3 class="text-2xl mb-6 font-semibold text-gray-100">▶ Continue Watching</h3>
+            <div id="continue-watching-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4"></div>
+        </section>
+
+        <section id="featured-section">
+            <h3 class="text-2xl mb-6 font-semibold text-gray-100">🎬 Featured</h3>
+            <div id="featured-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4"></div>
+        </section>
+
         <section>
             <h3 class="text-2xl mb-6 font-semibold text-gray-100">Trending Now</h3>
             <div id="trending-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
@@ -92,24 +215,133 @@
 
         <section>
             <h3 class="text-2xl mb-6 font-semibold text-gray-100">Top Rated</h3>
-            <div id="top-rated-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
-                <!-- Movies will be injected here -->
+            <div id="top-rated-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4"></div>
+        </section>
+
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <h3 class="text-2xl font-semibold text-gray-100">🔥 Action</h3>
+                <span id="action-updated" class="text-xs text-gray-500 mt-1"></span>
             </div>
+            <div id="action-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4">
+                <p style="color:var(--theme-muted);padding:1rem">Loading...</p>
+            </div>
+        </section>
+
+        <section id="recommended-section" class="hidden">
+            <h3 class="text-2xl mb-2 font-semibold text-gray-100">Recommended For You &#11088;</h3>
+            <p class="text-gray-500 text-sm mb-6">Based on your ratings</p>
+            <div id="recommended-grid" class="flex space-x-4 overflow-x-auto scrollbar-hide pb-4"></div>
         </section>
     </div>
     </div> <!-- End of main-content -->
 
     <!-- Video Player Modal -->
     <div id="player-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="absolute top-6 right-6 z-[110]">
+        <div class="absolute top-6 right-6 z-[110] flex items-center gap-3">
+            <button id="switch-ep-btn" onclick="switchEpisodeWhileWatching()" class="hidden text-white hover:text-yellow-400 transition p-2 bg-black/60 rounded-full shadow-lg border border-white/20 text-sm font-semibold px-4 flex items-center gap-2">
+                &#9783; Episodes
+            </button>
+            <!-- Server switcher -->
+            <div class="flex items-center gap-1 bg-black/60 border border-white/20 rounded-full px-3 py-1.5 shadow-lg">
+                <button onclick="switchServer(-1)" class="text-white hover:text-yellow-400 transition text-lg font-bold px-1 leading-none" title="Previous server">&#8249;</button>
+                <span id="server-indicator" class="text-white text-xs font-semibold min-w-[72px] text-center">VidSrc.me</span>
+                <button onclick="switchServer(1)" class="text-white hover:text-yellow-400 transition text-lg font-bold px-1 leading-none" title="Next server">&#8250;</button>
+            </div>
             <button onclick="closePlayer()" class="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
         </div>
+        <div id="now-playing-label" class="absolute top-6 left-6 z-[110] hidden text-white text-sm bg-black/60 border border-white/10 rounded-full px-4 py-1.5 font-medium"></div>
         <div class="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] relative border border-white/5">
             <iframe id="video-iframe" src="" class="w-full h-full" frameborder="0" allowfullscreen allow="autoplay; encrypted-media; gyroscope; picture-in-picture"></iframe>
         </div>
     </div>
+
+    <!-- Episode Wheel Modal -->
+    <div id="episode-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex flex-col items-center justify-center p-4 backdrop-blur-sm">
+        <div class="absolute top-6 right-6 z-[110]">
+            <button onclick="closeEpisodeWheel()" class="text-white hover:text-red-600 transition p-2 bg-black/50 rounded-full shadow-lg border border-white/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="text-center mb-6">
+            <h2 id="wheel-show-title" class="text-2xl font-bold text-white mb-1"></h2>
+            <p class="text-gray-400 text-sm">Select season and episode</p>
+        </div>
+        <div class="flex items-center justify-center gap-12 mb-8">
+            <!-- Season Wheel -->
+            <div class="flex flex-col items-center">
+                <p class="text-gray-400 text-xs uppercase tracking-widest mb-3">Season</p>
+                <div class="relative">
+                    <div class="absolute top-0 left-0 right-0 h-16 z-10 pointer-events-none rounded-t-xl" style="background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent)"></div>
+                    <div class="absolute bottom-0 left-0 right-0 h-16 z-10 pointer-events-none rounded-b-xl" style="background: linear-gradient(to top, rgba(0,0,0,0.95), transparent)"></div>
+                    <div class="absolute left-0 right-0 z-10 pointer-events-none" class="wheel-border-line" style="top:50%; transform:translateY(-50%); height:48px; border-top: 1px solid rgba(220,38,38,0.6); border-bottom: 1px solid rgba(220,38,38,0.6);"></div>
+                    <div id="season-wheel" class="w-28 overflow-y-scroll scrollbar-hide" style="height:256px; scroll-snap-type: y mandatory;" onscroll="onSeasonScroll()">
+                        <div style="height:104px"></div>
+                        <div style="height:104px"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Episode Wheel -->
+            <div class="flex flex-col items-center">
+                <p class="text-gray-400 text-xs uppercase tracking-widest mb-3">Episode</p>
+                <div class="relative">
+                    <div class="absolute top-0 left-0 right-0 h-16 z-10 pointer-events-none rounded-t-xl" style="background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent)"></div>
+                    <div class="absolute bottom-0 left-0 right-0 h-16 z-10 pointer-events-none rounded-b-xl" style="background: linear-gradient(to top, rgba(0,0,0,0.95), transparent)"></div>
+                    <div class="absolute left-0 right-0 z-10 pointer-events-none" class="wheel-border-line" style="top:50%; transform:translateY(-50%); height:48px; border-top: 1px solid rgba(220,38,38,0.6); border-bottom: 1px solid rgba(220,38,38,0.6);"></div>
+                    <div id="episode-wheel" class="w-28 overflow-y-scroll scrollbar-hide" style="height:256px; scroll-snap-type: y mandatory;" onscroll="onEpisodeScroll()">
+                        <div style="height:104px"></div>
+                        <div style="height:104px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button onclick="playSelectedEpisode()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-12 py-3 rounded-full text-lg transition">
+            &#9654; Play
+        </button>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4" style="background:rgba(0,0,0,0.85)">
+        <div class="bg-[#1c1c1c] border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl">
+            <div id="rating-poster-wrap" class="mb-4">
+                <img id="rating-poster" src="" class="w-24 h-36 object-cover rounded-lg mx-auto shadow-lg" alt="">
+            </div>
+            <p class="text-gray-400 text-sm mb-1">How was it?</p>
+            <h3 id="rating-title" class="text-xl font-bold text-white mb-5 truncate"></h3>
+            <div id="star-row" class="flex justify-center gap-3 mb-6">
+                <span class="star text-4xl cursor-pointer select-none transition-transform hover:scale-125" data-v="1">&#9733;</span>
+                <span class="star text-4xl cursor-pointer select-none transition-transform hover:scale-125" data-v="2">&#9733;</span>
+                <span class="star text-4xl cursor-pointer select-none transition-transform hover:scale-125" data-v="3">&#9733;</span>
+                <span class="star text-4xl cursor-pointer select-none transition-transform hover:scale-125" data-v="4">&#9733;</span>
+                <span class="star text-4xl cursor-pointer select-none transition-transform hover:scale-125" data-v="5">&#9733;</span>
+            </div>
+            <button onclick="skipRating()" class="text-gray-500 text-sm hover:text-gray-300 transition">Skip</button>
+        </div>
+    </div>
+
+    <style>
+        .star { color: #4b4b4b; }
+        .star.lit { color: #f59e0b; }
+        .wheel-item {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: center;
+            font-size: 1rem;
+            color: #6b7280;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.15s, font-size 0.15s, font-weight 0.15s;
+        }
+        .wheel-item.active {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+    </style>
 
     <script>
         // Using the API Key you provided
@@ -120,50 +352,423 @@
 
         let currentMovieId = null;
         let currentMediaType = 'movie';
+        let selectedSeason = 1;
+        let selectedEpisode = 1;
+        let totalSeasons = 1;
+        let seasonEpisodeCounts = {};
+        let scrollTimeout = null;
+
+        // ── MULTI-SERVER EMBED SYSTEM ─────────────────────────
+        const SERVERS = {
+            movie: [
+                (id) => `https://www.2embed.cc/embed/${id}`,
+                (id) => `https://vidlink.pro/movie/${id}`,
+                (id) => `https://www.2embed.skin/embed/${id}`,
+            ],
+            tv: [
+                (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`,
+                (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}`,
+                (id, s, e) => `https://www.2embed.skin/embedtv/${id}&s=${s}&e=${e}`,
+            ]
+        };
+        const SERVER_NAMES = ['2embed.cc', 'VidLink', '2embed.skin'];
+        let currentServer = 0;
+
+        function getEmbedUrl(type, id, season, episode) {
+            if (type === 'movie') return SERVERS.movie[currentServer](id);
+            return SERVERS.tv[currentServer](id, season, episode);
+        }
+
+        function switchServer(dir) {
+            const total = SERVER_NAMES.length;
+            currentServer = (currentServer + dir + total) % total;
+            updateServerIndicator();
+            // Reload with new server
+            if (currentMediaType === 'tv') {
+                document.getElementById('video-iframe').src = getEmbedUrl('tv', currentMovieId, selectedSeason, selectedEpisode);
+            } else {
+                document.getElementById('video-iframe').src = getEmbedUrl('movie', currentMovieId);
+            }
+        }
+
+        function updateServerIndicator() {
+            const el = document.getElementById('server-indicator');
+            if (el) el.textContent = SERVER_NAMES[currentServer];
+        }
 
         function playMovie(id, type = 'movie') {
             currentMovieId = id;
             currentMediaType = type;
-            const modal = document.getElementById('player-modal');
-            
-            updateIframe();
-            
-            modal.classList.remove('hidden');
+            currentServer = 0; // reset to first server
+            if (type === 'tv') {
+                // Check if we have a saved position for this show
+                const saved = getWatchProgress(id);
+                if (saved) {
+                    selectedSeason = saved.season;
+                    selectedEpisode = saved.episode;
+                    // Ask user if they want to resume
+                    showResumePrompt(id, saved);
+                } else {
+                    openEpisodeWheel(id);
+                }
+            } else {
+                document.getElementById('video-iframe').src = getEmbedUrl('movie', id);
+                document.getElementById('player-modal').classList.remove('hidden');
+                document.getElementById('switch-ep-btn').classList.add('hidden');
+                document.getElementById('now-playing-label').classList.add('hidden');
+                updateServerIndicator();
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // ── WATCH PROGRESS ────────────────────────────────────
+        function getWatchProgress(id) {
+            try {
+                const all = JSON.parse(localStorage.getItem('musti_progress') || '{}');
+                return all[id] || null;
+            } catch(e) { return null; }
+        }
+
+        function saveWatchProgress(id, season, episode, showName) {
+            try {
+                const all = JSON.parse(localStorage.getItem('musti_progress') || '{}');
+                all[id] = { season, episode, showName, savedAt: Date.now() };
+                localStorage.setItem('musti_progress', JSON.stringify(all));
+            } catch(e) {}
+        }
+
+        function showResumePrompt(id, saved) {
+            // Create resume overlay
+            const existing = document.getElementById('resume-prompt');
+            if (existing) existing.remove();
+
+            const prompt = document.createElement('div');
+            prompt.id = 'resume-prompt';
+            prompt.style.cssText = 'position:fixed;inset:0;z-index:150;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px)';
+            prompt.innerHTML = `
+                <div style="background:#1c1c1c;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center;box-shadow:0 0 40px rgba(0,0,0,0.6)">
+                    <div style="font-size:2rem;margin-bottom:0.5rem">▶️</div>
+                    <h3 style="color:white;font-size:1.2rem;font-weight:700;margin-bottom:0.4rem">${saved.showName || 'Continue Watching?'}</h3>
+                    <p style="color:#9ca3af;font-size:0.9rem;margin-bottom:1.5rem">Resume from <span style="color:white;font-weight:600">S${saved.season} E${saved.episode}</span></p>
+                    <div style="display:flex;flex-direction:column;gap:0.75rem">
+                        <button onclick="resumeWatching()" style="background:var(--theme-accent);color:white;font-weight:700;padding:0.75rem 1.5rem;border-radius:999px;border:none;cursor:pointer;font-size:1rem;transition:opacity 0.2s" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
+                            ▶ Resume S${saved.season} E${saved.episode}
+                        </button>
+                        <button onclick="startFromBeginning()" style="background:rgba(255,255,255,0.1);color:white;font-weight:600;padding:0.65rem 1.5rem;border-radius:999px;border:1px solid rgba(255,255,255,0.2);cursor:pointer;font-size:0.9rem;transition:opacity 0.2s" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">
+                            Start from Beginning
+                        </button>
+                        <button onclick="chooseEpisode()" style="background:transparent;color:#6b7280;font-size:0.85rem;border:none;cursor:pointer;padding:0.5rem;transition:color 0.2s" onmouseover="this.style.color='white'" onmouseout="this.style.color='#6b7280'">
+                            Choose Episode
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(prompt);
+        }
+
+        function resumeWatching() {
+            const prompt = document.getElementById('resume-prompt');
+            if (prompt) prompt.remove();
+            launchTvPlayer(currentMovieId, selectedSeason, selectedEpisode);
+        }
+
+        function startFromBeginning() {
+            const prompt = document.getElementById('resume-prompt');
+            if (prompt) prompt.remove();
+            selectedSeason = 1;
+            selectedEpisode = 1;
+            launchTvPlayer(currentMovieId, 1, 1);
+        }
+
+        function chooseEpisode() {
+            const prompt = document.getElementById('resume-prompt');
+            if (prompt) prompt.remove();
+            openEpisodeWheel(currentMovieId);
+        }
+
+        function launchTvPlayer(id, season, episode) {
+            selectedSeason = season;
+            selectedEpisode = episode;
+            document.getElementById('video-iframe').src = getEmbedUrl('tv', id, season, episode);
+            document.getElementById('player-modal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            // Show episode switcher button
+            document.getElementById('switch-ep-btn').classList.remove('hidden');
+            // Update now playing label
+            updateNowPlayingLabel();
+            updateServerIndicator();
         }
 
-        function updateIframe() {
-            const iframe = document.getElementById('video-iframe');
-            
-            // TMDB movies often don't have media_type unless it's a multi search.
-            const type = currentMediaType || (document.getElementById('hero-title').innerText ? 'movie' : 'tv');
-            
-            // Using vidsrc.me for better audio tracks (Line-In)
-            iframe.src = `https://vidsrc.me/embed/${type}?tmdb=${currentMovieId}`;
+        function updateNowPlayingLabel() {
+            const label = document.getElementById('now-playing-label');
+            label.textContent = `S${selectedSeason} · E${selectedEpisode}`;
+            label.classList.remove('hidden');
         }
 
-        function switchProvider() {
-            updateIframe();
+        function switchEpisodeWhileWatching() {
+            // Close player temporarily, open wheel, then come back
+            document.getElementById('player-modal').classList.add('hidden');
+            openEpisodeWheel(currentMovieId);
+        }
+
+        async function openEpisodeWheel(id) {
+            document.getElementById('wheel-show-title').innerText = '';
+            selectedSeason = 1;
+            selectedEpisode = 1;
+            seasonEpisodeCounts = {};
+
+            try {
+                const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US`);
+                const data = await res.json();
+                document.getElementById('wheel-show-title').innerText = data.name || '';
+                totalSeasons = data.number_of_seasons || 1;
+                data.seasons.forEach(s => {
+                    if (s.season_number > 0) seasonEpisodeCounts[s.season_number] = s.episode_count;
+                });
+            } catch(e) { totalSeasons = 5; }
+
+            buildSeasonWheel();
+            await buildEpisodeWheel(1);
+
+            document.getElementById('episode-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => { scrollWheelTo('season-wheel', 0); scrollWheelTo('episode-wheel', 0); }, 80);
+        }
+
+        function buildSeasonWheel() {
+            const wheel = document.getElementById('season-wheel');
+            while (wheel.children.length > 2) wheel.removeChild(wheel.children[1]);
+            const bot = wheel.children[wheel.children.length - 1];
+            for (let s = 1; s <= totalSeasons; s++) {
+                const item = document.createElement('div');
+                item.className = 'wheel-item' + (s === 1 ? ' active' : '');
+                item.textContent = `S${s}`;
+                item.dataset.value = s;
+                item.onclick = () => scrollWheelTo('season-wheel', s - 1);
+                wheel.insertBefore(item, bot);
+            }
+        }
+
+        async function buildEpisodeWheel(season) {
+            const wheel = document.getElementById('episode-wheel');
+            while (wheel.children.length > 2) wheel.removeChild(wheel.children[1]);
+            const bot = wheel.children[wheel.children.length - 1];
+            let epCount = seasonEpisodeCounts[season];
+            if (!epCount) {
+                try {
+                    const res = await fetch(`${BASE_URL}/tv/${currentMovieId}/season/${season}?api_key=${API_KEY}`);
+                    const data = await res.json();
+                    epCount = data.episodes ? data.episodes.length : 10;
+                    seasonEpisodeCounts[season] = epCount;
+                } catch(e) { epCount = 10; }
+            }
+            for (let e = 1; e <= epCount; e++) {
+                const item = document.createElement('div');
+                item.className = 'wheel-item' + (e === 1 ? ' active' : '');
+                item.textContent = `EP${e}`;
+                item.dataset.value = e;
+                item.onclick = () => scrollWheelTo('episode-wheel', e - 1);
+                wheel.insertBefore(item, bot);
+            }
+        }
+
+        function scrollWheelTo(wheelId, index) {
+            document.getElementById(wheelId).scrollTo({ top: index * 48, behavior: 'smooth' });
+        }
+
+        function updateActiveItems(wheelId) {
+            const wheel = document.getElementById(wheelId);
+            const activeIndex = Math.round(wheel.scrollTop / 48);
+            wheel.querySelectorAll('.wheel-item').forEach((item, i) => {
+                item.classList.toggle('active', i === activeIndex);
+            });
+            return activeIndex + 1;
+        }
+
+        function onSeasonScroll() {
+            const val = updateActiveItems('season-wheel');
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(async () => {
+                if (val !== selectedSeason) {
+                    selectedSeason = val;
+                    selectedEpisode = 1;
+                    await buildEpisodeWheel(selectedSeason);
+                    scrollWheelTo('episode-wheel', 0);
+                }
+            }, 150);
+        }
+
+        function onEpisodeScroll() {
+            const val = updateActiveItems('episode-wheel');
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => { selectedEpisode = val; }, 150);
+        }
+
+        function playSelectedEpisode() {
+            closeEpisodeWheel();
+            launchTvPlayer(currentMovieId, selectedSeason, selectedEpisode);
+            // Save progress
+            const showTitle = document.getElementById('wheel-show-title').innerText;
+            saveWatchProgress(currentMovieId, selectedSeason, selectedEpisode, showTitle);
+        }
+
+        function closeEpisodeWheel() {
+            document.getElementById('episode-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
         function closePlayer() {
-            const modal = document.getElementById('player-modal');
-            const iframe = document.getElementById('video-iframe');
-            iframe.src = '';
-            modal.classList.add('hidden');
+            // Save watch progress if it's a TV show
+            if (currentMediaType === 'tv' && currentMovieId) {
+                const showTitle = document.getElementById('wheel-show-title').innerText || '';
+                saveWatchProgress(currentMovieId, selectedSeason, selectedEpisode, showTitle);
+            }
+            document.getElementById('video-iframe').src = '';
+            document.getElementById('player-modal').classList.add('hidden');
+            document.getElementById('switch-ep-btn').classList.add('hidden');
+            document.getElementById('now-playing-label').classList.add('hidden');
             document.body.style.overflow = 'auto';
+            if (currentMovieId) showRatingModal(currentMovieId, currentMediaType);
             currentMovieId = null;
+        }
+
+        // ── RATINGS ──────────────────────────────────────────
+        let ratingMovieId = null;
+        let ratingMediaType = null;
+        let ratingMovieTitle = '';
+        let ratingMoviePoster = '';
+        let ratingMovieGenres = [];
+        let hoveredStar = 0;
+
+        async function showRatingModal(id, type) {
+            ratingMovieId = id;
+            ratingMediaType = type;
+            try {
+                const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=en-US`);
+                const data = await res.json();
+                ratingMovieTitle = data.title || data.name || '';
+                ratingMoviePoster = data.poster_path || '';
+                ratingMovieGenres = (data.genres || []).map(g => g.id);
+            } catch(e) {}
+
+            document.getElementById('rating-title').innerText = ratingMovieTitle;
+            const poster = document.getElementById('rating-poster');
+            if (ratingMoviePoster) {
+                poster.src = IMG_URL + ratingMoviePoster;
+                document.getElementById('rating-poster-wrap').classList.remove('hidden');
+            } else {
+                document.getElementById('rating-poster-wrap').classList.add('hidden');
+            }
+
+            const saved = getRatings();
+            const existing = saved[id] ? saved[id].stars : 0;
+            updateStarDisplay(existing);
+            hoveredStar = 0;
+
+            document.querySelectorAll('.star').forEach(star => {
+                star.onmouseover = () => { hoveredStar = +star.dataset.v; updateStarDisplay(hoveredStar); };
+                star.onmouseout  = () => { const s = getRatings()[ratingMovieId]; updateStarDisplay(s ? s.stars : 0); hoveredStar = 0; };
+                star.onclick     = () => submitRating(+star.dataset.v);
+            });
+
+            document.getElementById('rating-modal').classList.remove('hidden');
+        }
+
+        function updateStarDisplay(count) {
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.toggle('lit', +s.dataset.v <= count);
+            });
+        }
+
+        function submitRating(stars) {
+            const ratings = getRatings();
+            ratings[ratingMovieId] = { stars, title: ratingMovieTitle, poster: ratingMoviePoster, type: ratingMediaType, genres: ratingMovieGenres };
+            localStorage.setItem('musti_ratings', JSON.stringify(ratings));
+            updateStarDisplay(stars);
+            setTimeout(() => {
+                skipRating();
+                refreshRecommended();
+                refreshCardBadges();
+            }, 600);
+        }
+
+        function skipRating() {
+            document.getElementById('rating-modal').classList.add('hidden');
+        }
+
+        function getRatings() {
+            try { return JSON.parse(localStorage.getItem('musti_ratings') || '{}'); } catch(e) { return {}; }
+        }
+
+        function getMyRating(id) {
+            const r = getRatings();
+            return r[id] ? r[id].stars : 0;
+        }
+
+        // ── RECOMMENDATIONS ───────────────────────────────────
+        async function refreshRecommended() {
+            const ratings = getRatings();
+            const liked = Object.entries(ratings).filter(([,v]) => v.stars >= 4);
+            if (!liked.length) return;
+
+            const pick = liked[Math.floor(Math.random() * liked.length)];
+            const [id, meta] = pick;
+
+            try {
+                const res = await fetch(`${BASE_URL}/${meta.type}/${id}/recommendations?api_key=${API_KEY}&language=en-US`);
+                const data = await res.json();
+                const results = (data.results || []).filter(m => m.backdrop_path || m.poster_path).slice(0, 15);
+                if (!results.length) return;
+
+                const grid = document.getElementById('recommended-grid');
+                grid.innerHTML = '';
+                results.forEach(movie => {
+                    movie.media_type = movie.media_type || meta.type;
+                    const card = createMovieCard(movie);
+                    if (card) grid.appendChild(card);
+                });
+                document.getElementById('recommended-section').classList.remove('hidden');
+            } catch(e) {}
+        }
+
+        function refreshCardBadges() {
+            document.querySelectorAll('[data-movie-id]').forEach(el => {
+                const stars = getMyRating(el.dataset.movieId);
+                const badge = el.querySelector('.rating-badge');
+                if (badge) { badge.textContent = stars ? '★'.repeat(stars) : ''; badge.style.display = stars ? 'block' : 'none'; }
+            });
         }
 
         async function fetchMovies(endpoint) {
             try {
-                const res = await fetch(`${BASE_URL}${endpoint}?api_key=${API_KEY}&language=en-US`);
+                const url = `${BASE_URL}${endpoint}?api_key=${API_KEY}&language=en-US&page=1`;
+                const res = await fetch(url);
+                if (!res.ok) {
+                    showDebug(`HTTP ${res.status} on ${endpoint}`);
+                    return [];
+                }
                 const data = await res.json();
+                if (!data.results || !data.results.length) {
+                    showDebug(`No results from ${endpoint}: ${JSON.stringify(data).slice(0,100)}`);
+                    return [];
+                }
                 return data.results;
             } catch (error) {
-                console.error('Error fetching movies:', error);
+                showDebug(`Fetch error: ${error.message}`);
                 return [];
             }
+        }
+
+        function showDebug(msg) {
+            console.error(msg);
+            let dbg = document.getElementById('debug-msg');
+            if (!dbg) {
+                dbg = document.createElement('div');
+                dbg.id = 'debug-msg';
+                dbg.style = 'position:fixed;bottom:10px;left:10px;z-index:9999;background:#111;color:#f87171;font-size:12px;padding:10px;border-radius:8px;border:1px solid #f87171;max-width:400px';
+                document.body.appendChild(dbg);
+            }
+            dbg.innerHTML += msg + '<br>';
         }
 
         async function searchMovies() {
@@ -181,7 +786,7 @@
                     const hasValidImage = imagePath && imagePath.length > 5 && !imagePath.includes('michael-backdrop');
                     
                     if (title.includes('michael')) {
-                        return movie.id === 936075 && hasValidImage;
+                        return (movie.id === 936075 || movie.id === 323111) && hasValidImage;
                     }
                     return hasValidImage;
                 });
@@ -230,24 +835,207 @@
         function createMovieCard(movie) {
             const card = document.createElement('div');
             card.className = 'movie-card flex-none w-[200px] md:w-[280px] cursor-pointer';
-            
+            card.dataset.movieId = movie.id;
+
             const imagePath = movie.backdrop_path || movie.poster_path;
             if (!imagePath) return null;
 
             const mediaType = movie.media_type || 'movie';
             card.onclick = () => playMovie(movie.id, mediaType);
 
+            const myStars = getMyRating(movie.id);
+            const starsHtml = myStars ? `<div class="rating-badge absolute top-2 right-2 bg-black/70 text-yellow-400 text-xs px-2 py-0.5 rounded-full font-bold">${'★'.repeat(myStars)}</div>` : `<div class="rating-badge absolute top-2 right-2 text-yellow-400 text-xs px-2 py-0.5 rounded-full font-bold hidden"></div>`;
+
             card.innerHTML = `
-                <img src="${IMG_URL + imagePath}" class="rounded shadow-lg w-full h-auto" alt="${movie.title || movie.name}">
+                <div class="relative">
+                    <img src="${IMG_URL + imagePath}" class="rounded shadow-lg w-full h-auto" alt="${movie.title || movie.name}">
+                    ${starsHtml}
+                </div>
                 <p class="mt-2 text-xs md:text-sm font-medium text-gray-300 truncate">${movie.title || movie.name}</p>
             `;
             return card;
         }
 
+
+        // ── MONTHLY THEME ENGINE ──────────────────────────────
+        const THEMES = {
+            default: {
+                name: 'MUSTI',
+                bg: '#141414', bg2: '#1c1c1c',
+                accent: '#e50914', accent2: '#b20710',
+                text: '#ffffff', muted: '#6b7280',
+                font: 'Inter, sans-serif',
+                logoColor: '#e50914',
+                logoText: 'MUSTI',
+                bannerBg: '#1c1c1c', bannerBorder: '#e50914', bannerText: '#ffffff',
+                wheelBorder: 'rgba(220,38,38,0.6)',
+                ratingBg: '#1c1c1c',
+            },
+            mandalorian: {
+                name: 'The Mandalorian & Grogu',
+                bg: '#080d14', bg2: '#0d1520',
+                accent: '#4fc3f7', accent2: '#0288d1',
+                text: '#e8f4fd', muted: '#546e7a',
+                font: 'Courier New, monospace',
+                logoColor: '#4fc3f7',
+                bannerBg: '#0d1520', bannerBorder: '#4fc3f7', bannerText: '#e8f4fd',
+                wheelBorder: 'rgba(79,195,247,0.6)',
+                ratingBg: '#0d1520',
+                tagline: '🌌 This is the Way — Themed for The Mandalorian & Grogu',
+            },
+            toyStory: {
+                name: 'Toy Story 5',
+                bg: '#1a3a5c', bg2: '#0f2540',
+                accent: '#ffd700', accent2: '#ff8c00',
+                text: '#ffffff', muted: '#7db8e8',
+                font: 'Georgia, serif',
+                logoColor: '#ffd700',
+                bannerBg: '#0f2540', bannerBorder: '#ffd700', bannerText: '#ffffff',
+                wheelBorder: 'rgba(255,215,0,0.6)',
+                ratingBg: '#0f2540',
+                tagline: '🤠 To infinity and beyond! — Toy Story 5 is in theaters now',
+            },
+            masters: {
+                name: 'Masters of the Universe',
+                bg: '#1a0a2e', bg2: '#240f3d',
+                accent: '#ffd700', accent2: '#ff6b00',
+                text: '#fff8e1', muted: '#8d6e63',
+                font: 'Georgia, serif',
+                logoColor: '#ffd700',
+                bannerBg: '#240f3d', bannerBorder: '#ffd700', bannerText: '#fff8e1',
+                wheelBorder: 'rgba(255,215,0,0.6)',
+                ratingBg: '#240f3d',
+                tagline: '⚔️ By the Power of Grayskull — Themed for Masters of the Universe',
+            }
+        };
+
+        function getActiveThemeKey() {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = now.getMonth(); // 0-indexed
+            const d = now.getDate();
+
+            // May 24 – Jun 4: Mandalorian
+            if ((m === 4 && d >= 24) || (m === 5 && d <= 4)) return 'mandalorian';
+
+            // Jun 5 – Jul 6: Toy Story 5
+            if ((m === 5 && d >= 5) || (m === 6 && d <= 6)) return 'toyStory';
+
+            // Jul 7 onwards: Masters of the Universe
+            if ((m === 6 && d >= 7) || m > 6) return 'masters';
+
+            return 'default';
+        }
+
+        function applyTheme(key) {
+            const t = THEMES[key] || THEMES.default;
+            const root = document.documentElement.style;
+            root.setProperty('--theme-bg', t.bg);
+            root.setProperty('--theme-bg2', t.bg2);
+            root.setProperty('--theme-accent', t.accent);
+            root.setProperty('--theme-accent2', t.accent2);
+            root.setProperty('--theme-text', t.text);
+            root.setProperty('--theme-muted', t.muted);
+            root.setProperty('--theme-font', t.font || 'Inter, sans-serif');
+            root.setProperty('--theme-logo-color', t.logoColor);
+
+            document.body.style.backgroundColor = t.bg;
+            document.body.style.color = t.text;
+
+            // Font
+            document.body.style.fontFamily = t.font || 'Inter, sans-serif';
+
+            // Logo
+            const logo = document.getElementById('logo-text');
+            if (logo) logo.style.color = t.logoColor;
+
+            // Play button & rating button accent
+            const playBtns = document.querySelectorAll('#hero-play-btn, #playSelectedEpisodeBtn');
+            // Rating modal bg
+            const ratingModal = document.querySelector('#rating-modal > div');
+            if (ratingModal) { ratingModal.style.backgroundColor = t.ratingBg; ratingModal.style.borderColor = t.accent + '33'; }
+
+            // Wheel borders
+            document.querySelectorAll('.wheel-border-line').forEach(el => {
+                el.style.borderTopColor = t.wheelBorder;
+                el.style.borderBottomColor = t.wheelBorder;
+            });
+
+            // Star colors
+            document.querySelectorAll('.star.lit').forEach(s => s.style.color = t.accent);
+
+            // Show banner if not default
+            if (key !== 'default' && t.tagline) {
+                setTimeout(() => {
+                    const banner = document.getElementById('theme-banner');
+                    if (!banner) return;
+                    banner.style.display = 'block';
+                    banner.style.backgroundColor = t.bannerBg;
+                    banner.style.border = `1px solid ${t.bannerBorder}`;
+                    banner.style.color = t.bannerText;
+                    banner.innerHTML = `<div style="font-size:11px;opacity:0.7;margin-bottom:4px">THIS MONTH'S THEME</div><div style="font-weight:700;color:${t.accent}">${t.name}</div><div style="font-size:11px;opacity:0.6;margin-top:4px">${t.tagline}</div>`;
+                    setTimeout(() => { banner.style.opacity = '0'; banner.style.transition = 'opacity 1s'; setTimeout(() => { banner.style.display = 'none'; }, 1000); }, 6000);
+                }, 500);
+            }
+        }
+
+        async function refreshContinueWatching() {
+            try {
+                const all = JSON.parse(localStorage.getItem('musti_progress') || '{}');
+                const entries = Object.entries(all).sort((a, b) => (b[1].savedAt || 0) - (a[1].savedAt || 0)).slice(0, 10);
+                if (!entries.length) return;
+
+                const grid = document.getElementById('continue-watching-grid');
+                grid.innerHTML = '';
+
+                for (const [id, progress] of entries) {
+                    try {
+                        const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US`);
+                        const data = await res.json();
+                        if (!data || !data.id) continue;
+                        data.media_type = 'tv';
+
+                        const imagePath = data.backdrop_path || data.poster_path;
+                        if (!imagePath) continue;
+
+                        const card = document.createElement('div');
+                        card.className = 'movie-card flex-none w-[200px] md:w-[280px] cursor-pointer';
+                        card.dataset.movieId = id;
+                        card.onclick = () => playMovie(data.id, 'tv');
+                        card.innerHTML = `
+                            <div class="relative">
+                                <img src="${IMG_URL + imagePath}" class="rounded shadow-lg w-full h-auto" alt="${data.name || ''}">
+                                <div class="absolute bottom-2 left-2 right-2 bg-black/70 rounded px-2 py-1 text-xs text-white font-semibold" style="color:var(--theme-accent)">
+                                    ▶ S${progress.season} E${progress.episode}
+                                </div>
+                            </div>
+                            <p class="mt-2 text-xs md:text-sm font-medium text-gray-300 truncate">${data.name || ''}</p>
+                        `;
+                        grid.appendChild(card);
+                    } catch(e) {}
+                }
+
+                if (grid.children.length > 0) {
+                    document.getElementById('continue-watching-section').classList.remove('hidden');
+                }
+            } catch(e) {}
+        }
+
         async function init() {
+            applyTheme(getActiveThemeKey());
             // Fetch data
+            const trendingGrid = document.getElementById('trending-grid');
+            const topRatedGrid = document.getElementById('top-rated-grid');
+            trendingGrid.innerHTML = '<p style="color:var(--theme-muted);padding:1rem">Loading...</p>';
+            topRatedGrid.innerHTML = '<p style="color:var(--theme-muted);padding:1rem">Loading...</p>';
+
             let trending = await fetchMovies('/trending/all/week');
             let topRated = await fetchMovies('/movie/top_rated');
+
+            if (!trending.length && !topRated.length) {
+                trendingGrid.innerHTML = '<p style="color:#e50914;padding:1rem">Could not load movies. Check your internet connection.</p>';
+                return;
+            }
 
             // Filter logic for grids
             const filterMovies = (list) => list.filter(movie => {
@@ -256,7 +1044,7 @@
                 const hasValidImage = imagePath && imagePath.length > 5 && !imagePath.includes('michael-backdrop');
                 
                 if (title.includes('michael')) {
-                    return movie.id === 936075 && hasValidImage;
+                    return (movie.id === 936075 || movie.id === 323111) && hasValidImage;
                 }
                 return hasValidImage;
             });
@@ -290,21 +1078,447 @@
             }
 
             // Fill Trending Grid
-            const trendingGrid = document.getElementById('trending-grid');
+            trendingGrid.innerHTML = '';
             trending.forEach(movie => {
                 const card = createMovieCard(movie);
                 if (card) trendingGrid.appendChild(card);
             });
 
             // Fill Top Rated Grid
-            const topRatedGrid = document.getElementById('top-rated-grid');
+            topRatedGrid.innerHTML = '';
             topRated.forEach(movie => {
                 const card = createMovieCard(movie);
                 if (card) topRatedGrid.appendChild(card);
             });
+
+            // Fill Action Grid — auto updates weekly via TMDB discover
+            try {
+                const now = new Date();
+                const actionGrid = document.getElementById('action-grid');
+                const actionUpdated = document.getElementById('action-updated');
+
+                // Fetch latest action movies (genre 28) sorted by popularity, released recently
+                const thisYear = now.getFullYear();
+                const lastYear = thisYear - 1;
+                const actionRes = await fetch(
+                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=28&sort_by=popularity.desc&vote_count.gte=100&primary_release_date.gte=${lastYear}-01-01&language=en-US&page=1`
+                );
+                const actionData = await actionRes.json();
+                let actionMovies = (actionData.results || []).filter(m => {
+                    const imagePath = m.backdrop_path || m.poster_path;
+                    return imagePath && imagePath.length > 5;
+                });
+
+                actionGrid.innerHTML = '';
+                actionMovies.slice(0, 20).forEach(movie => {
+                    movie.media_type = 'movie';
+                    const card = createMovieCard(movie);
+                    if (card) actionGrid.appendChild(card);
+                });
+
+                // Show last updated date
+                const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                actionUpdated.textContent = `Updated ${dayNames[now.getDay()]} ${now.getDate()} ${monthNames[now.getMonth()]}`;
+            } catch(e) {
+                console.error('Action fetch error:', e);
+            }
+
+            refreshRecommended();
+            refreshContinueWatching();
+
+            // Add Behind the Scenes to Featured
+            try {
+                const btsRes = await fetch(`${BASE_URL}/movie/1592862?api_key=${API_KEY}&language=en-US`);
+                const btsData = await btsRes.json();
+
+                const featuredGrid = document.getElementById('featured-grid');
+                if (featuredGrid) featuredGrid.innerHTML = '';
+
+                if (btsData && btsData.id) {
+                    btsData.media_type = 'movie';
+                    if (featuredGrid) {
+                        const card = createMovieCard(btsData);
+                        if (card) featuredGrid.appendChild(card);
+                    }
+                }
+            } catch(e) { console.error('Featured fetch error:', e); }
         }
 
         init();
+
+        // Mobile tap — Web Shot effect
+        if (window.matchMedia('(pointer: coarse)').matches) {
+            document.addEventListener('touchstart', function(e) {
+                const touch = e.touches[0];
+                const x = touch.clientX;
+                const y = touch.clientY;
+                const accent = getComputedStyle(document.documentElement).getPropertyValue('--theme-accent').trim() || '#cc0000';
+
+                // Web thread — shoots upward at random angle
+                const angle = (Math.random() * 40 - 20) + 'deg';
+                const thread = document.createElement('div');
+                thread.className = 'tap-ripple';
+                thread.style.left = x + 'px';
+                thread.style.top = y + 'px';
+                thread.style.setProperty('--web-angle', angle);
+                thread.style.background = `linear-gradient(to top, transparent, #cccccc, white)`;
+                thread.style.boxShadow = `0 0 3px 1px rgba(200,200,200,0.5)`;
+                document.body.appendChild(thread);
+
+                // Expanding web ring
+                const ring = document.createElement('div');
+                ring.className = 'tap-ripple-ring';
+                ring.style.left = x + 'px';
+                ring.style.top = y + 'px';
+                ring.style.borderColor = '#aaaaaa';
+                ring.style.boxShadow = `0 0 6px rgba(180,180,180,0.4)`;
+                document.body.appendChild(ring);
+
+                // Web spokes SVG
+                const spokes = document.createElement('div');
+                spokes.className = 'tap-web-spokes';
+                spokes.style.left = x + 'px';
+                spokes.style.top = y + 'px';
+                spokes.innerHTML = `<svg viewBox="0 0 40 40" width="40" height="40" style="opacity:0.5">
+                    <line x1="20" y1="20" x2="20" y2="2" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="32" y2="8" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="38" y2="20" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="32" y2="32" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="20" y2="38" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="8" y2="32" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="2" y2="20" stroke="#bbb" stroke-width="0.8"/>
+                    <line x1="20" y1="20" x2="8" y2="8" stroke="#bbb" stroke-width="0.8"/>
+                    <circle cx="20" cy="20" r="5" fill="none" stroke="#bbb" stroke-width="0.6"/>
+                    <circle cx="20" cy="20" r="10" fill="none" stroke="#bbb" stroke-width="0.4"/>
+                </svg>`;
+                document.body.appendChild(spokes);
+
+                thread.addEventListener('animationend', () => thread.remove());
+                ring.addEventListener('animationend', () => ring.remove());
+                spokes.addEventListener('animationend', () => spokes.remove());
+            }, { passive: true });
+        }
+    </script>
+
+    <!-- Theme Banner -->
+    <div id="theme-banner"></div>
+
+    <!-- Toy Story 5 Background -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // ── Toy Story Sky Background ──
+        function drawToyStorySky() {
+            const W = canvas.width, H = canvas.height;
+            const sky = ctx.createLinearGradient(0, 0, 0, H);
+            sky.addColorStop(0,   '#4fc3f7');
+            sky.addColorStop(0.35,'#81d4fa');
+            sky.addColorStop(0.7, '#b3e5fc');
+            sky.addColorStop(1,   '#e1f5fe');
+            ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+            // Grass
+            const grass = ctx.createLinearGradient(0, H*0.82, 0, H);
+            grass.addColorStop(0, '#66bb6a'); grass.addColorStop(1, '#388e3c');
+            ctx.fillStyle = grass; ctx.fillRect(0, H*0.82, W, H*0.18);
+            ctx.strokeStyle = '#2e7d32'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(0, H*0.82); ctx.lineTo(W, H*0.82); ctx.stroke();
+        }
+
+        // ── Sun ──
+        function drawSun() {
+            const W = canvas.width;
+            const sx = W * 0.88, sy = 70;
+            const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, 100);
+            glow.addColorStop(0, 'rgba(255,238,88,0.55)');
+            glow.addColorStop(0.5, 'rgba(255,193,7,0.15)');
+            glow.addColorStop(1, 'rgba(255,193,7,0)');
+            ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(sx, sy, 100, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(sx, sy, 38, 0, Math.PI*2);
+            ctx.fillStyle = '#fdd835'; ctx.fill();
+            ctx.strokeStyle = '#f9a825'; ctx.lineWidth = 3; ctx.stroke();
+            ctx.strokeStyle = '#f57f17'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(sx-9, sy-5, 4, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(sx+9, sy-5, 4, 0, Math.PI*2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(sx, sy+4, 10, 0.2, Math.PI-0.2); ctx.stroke();
+        }
+
+        // ── Fluffy Clouds ──
+        const clouds = [];
+        function makeCloud(x) {
+            return {
+                x: x !== undefined ? x : canvas.width + 200,
+                y: canvas.height * (0.05 + Math.random() * 0.45),
+                scale: 0.6 + Math.random() * 0.8,
+                speed: 0.25 + Math.random() * 0.35,
+                opacity: 0.82 + Math.random() * 0.18,
+            };
+        }
+        for (let i = 0; i < 7; i++) {
+            const c = makeCloud(Math.random() * (canvas.width + 400) - 200);
+            clouds.push(c);
+        }
+        function drawCloud(x, y, sc, op) {
+            ctx.save(); ctx.globalAlpha = op;
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(200,230,255,0.4)'; ctx.shadowBlur = 10;
+            function puff(px, py, r) {
+                ctx.beginPath(); ctx.arc(x + px*sc, y + py*sc, r*sc, 0, Math.PI*2); ctx.fill();
+            }
+            puff(0, 0, 38); puff(-30, 8, 28); puff(32, 8, 30);
+            puff(-16, -14, 26); puff(16, -18, 30); puff(2, -22, 22);
+            puff(42, 14, 20); puff(-44, 14, 18);
+            ctx.restore();
+        }
+
+        // ── Woody on Horse ──
+        let horseX = -180, horseGait = 0;
+        const horseSpeed = 1.8;
+
+        function drawWoodyOnHorse(x, gait) {
+            const H = canvas.height;
+            const groundY = H * 0.82;
+            const sc = H * 0.003;
+            ctx.save(); ctx.translate(x, groundY);
+
+            const shG = ctx.createRadialGradient(0, -4, 2, 0, -4, 50*sc);
+            shG.addColorStop(0, 'rgba(0,0,0,0.30)'); shG.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.beginPath(); ctx.ellipse(0, -3, 55*sc, 12*sc, 0, 0, Math.PI*2);
+            ctx.fillStyle = shG; ctx.fill();
+
+            const bounce = Math.sin(gait * 2) * 3 * sc;
+            ctx.save(); ctx.translate(0, bounce);
+
+            // Horse body
+            ctx.beginPath(); ctx.ellipse(0, -50*sc, 45*sc, 28*sc, 0, 0, Math.PI*2);
+            ctx.fillStyle = '#8B4513'; ctx.fill();
+            ctx.strokeStyle = '#5D2E0C'; ctx.lineWidth = 1.2*sc; ctx.stroke();
+            // Neck
+            ctx.beginPath(); ctx.moveTo(28*sc, -60*sc);
+            ctx.quadraticCurveTo(50*sc, -90*sc, 38*sc, -115*sc);
+            ctx.quadraticCurveTo(20*sc, -120*sc, 15*sc, -105*sc);
+            ctx.lineTo(25*sc, -65*sc); ctx.fillStyle = '#8B4513'; ctx.fill();
+            ctx.strokeStyle = '#5D2E0C'; ctx.lineWidth = 1*sc; ctx.stroke();
+            // Head
+            ctx.beginPath(); ctx.ellipse(35*sc, -120*sc, 18*sc, 12*sc, -0.3, 0, Math.PI*2);
+            ctx.fillStyle = '#8B4513'; ctx.fill(); ctx.strokeStyle = '#5D2E0C'; ctx.lineWidth = 1*sc; ctx.stroke();
+            // Snout
+            ctx.beginPath(); ctx.ellipse(50*sc, -118*sc, 10*sc, 7*sc, -0.2, 0, Math.PI*2);
+            ctx.fillStyle = '#a0522d'; ctx.fill();
+            ctx.beginPath(); ctx.arc(55*sc, -116*sc, 2*sc, 0, Math.PI*2);
+            ctx.fillStyle = '#3d1a00'; ctx.fill();
+            // Eye
+            ctx.beginPath(); ctx.arc(28*sc, -124*sc, 2.5*sc, 0, Math.PI*2);
+            ctx.fillStyle = '#1a0a00'; ctx.fill();
+            ctx.beginPath(); ctx.arc(27.5*sc, -124.5*sc, 0.8*sc, 0, Math.PI*2);
+            ctx.fillStyle = '#ffffff'; ctx.fill();
+            // Mane
+            ctx.strokeStyle = '#3d1a00'; ctx.lineWidth = 3*sc; ctx.lineCap = 'round';
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.moveTo((30-i*4)*sc, (-108-i*3)*sc);
+                ctx.quadraticCurveTo((20-i*3)*sc, (-105-i*4)*sc, (18-i*4)*sc, (-98-i*2)*sc);
+                ctx.stroke();
+            }
+            // Tail
+            ctx.strokeStyle = '#3d1a00'; ctx.lineWidth = 4*sc;
+            ctx.beginPath(); ctx.moveTo(-42*sc, -55*sc);
+            ctx.quadraticCurveTo(-70*sc, -30*sc, -60*sc, 0); ctx.stroke();
+            // Animated legs
+            const legAnim = [Math.sin(gait), Math.sin(gait+Math.PI), Math.sin(gait+Math.PI*0.5), Math.sin(gait+Math.PI*1.5)];
+            const legDefs = [{bx:20*sc,byy:-26*sc,dir:1},{bx:5*sc,byy:-26*sc,dir:1},{bx:-10*sc,byy:-26*sc,dir:-1},{bx:-25*sc,byy:-26*sc,dir:-1}];
+            legDefs.forEach((l, i) => {
+                const kick = legAnim[i]*8*sc;
+                ctx.strokeStyle = '#7a3b10'; ctx.lineWidth = 5*sc; ctx.lineCap = 'round';
+                ctx.beginPath(); ctx.moveTo(l.bx, l.byy); ctx.lineTo(l.bx+kick*l.dir*0.5, l.byy+20*sc); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(l.bx+kick*l.dir*0.5, l.byy+20*sc); ctx.lineTo(l.bx+kick*l.dir, l.byy+40*sc-Math.abs(kick)*0.3); ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(l.bx+kick*l.dir, l.byy+42*sc, 5*sc, 3*sc, 0, 0, Math.PI*2);
+                ctx.fillStyle = '#1a0a00'; ctx.fill();
+            });
+            ctx.restore(); // bounce
+
+            // ── Woody ──
+            ctx.save(); ctx.translate(0, bounce - 4*sc);
+            const wsc = sc * 0.9, wyBase = -80*sc;
+            // Shirt
+            ctx.beginPath(); ctx.moveTo(-14*wsc,wyBase); ctx.lineTo(-18*wsc,wyBase-50*wsc); ctx.lineTo(18*wsc,wyBase-50*wsc); ctx.lineTo(14*wsc,wyBase);
+            ctx.fillStyle = '#f5c518'; ctx.fill();
+            ctx.strokeStyle = '#c8a000'; ctx.lineWidth = 1.8*wsc;
+            for (let i=-10;i<10;i+=5){ctx.beginPath();ctx.moveTo(i*wsc,wyBase-10*wsc);ctx.lineTo((i-2)*wsc,wyBase-50*wsc);ctx.stroke();}
+            // Vest
+            ctx.beginPath(); ctx.moveTo(-14*wsc,wyBase-5*wsc); ctx.lineTo(-16*wsc,wyBase-45*wsc); ctx.lineTo(-5*wsc,wyBase-48*wsc); ctx.lineTo(0,wyBase-50*wsc); ctx.lineTo(5*wsc,wyBase-48*wsc); ctx.lineTo(16*wsc,wyBase-45*wsc); ctx.lineTo(14*wsc,wyBase-5*wsc);
+            ctx.fillStyle = '#8B4513'; ctx.fill();
+            // Arms holding reins
+            ctx.strokeStyle = '#f5c518'; ctx.lineWidth = 8*wsc; ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(-16*wsc,wyBase-42*wsc); ctx.quadraticCurveTo(-30*wsc,wyBase-55*wsc,-24*wsc,wyBase-70*wsc); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(16*wsc,wyBase-42*wsc); ctx.quadraticCurveTo(30*wsc,wyBase-55*wsc,22*wsc,wyBase-70*wsc); ctx.stroke();
+            ctx.fillStyle = '#f5c518';
+            ctx.beginPath(); ctx.arc(-24*wsc,wyBase-70*wsc,5*wsc,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(22*wsc,wyBase-70*wsc,5*wsc,0,Math.PI*2); ctx.fill();
+            // Reins
+            ctx.strokeStyle = '#5D2E0C'; ctx.lineWidth = 1.5*wsc;
+            ctx.beginPath(); ctx.moveTo(-24*wsc,wyBase-70*wsc); ctx.quadraticCurveTo(0,wyBase-60*wsc,36*wsc,-115*sc+wyBase); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(22*wsc,wyBase-70*wsc); ctx.quadraticCurveTo(10*wsc,wyBase-55*wsc,31*wsc,-115*sc+wyBase); ctx.stroke();
+            // Jeans
+            ctx.fillStyle = '#3a6ea5';
+            ctx.beginPath(); ctx.moveTo(-14*wsc,wyBase); ctx.lineTo(-18*wsc,wyBase+12*wsc); ctx.lineTo(-10*wsc,wyBase+14*wsc); ctx.lineTo(-6*wsc,wyBase); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(14*wsc,wyBase); ctx.lineTo(18*wsc,wyBase+12*wsc); ctx.lineTo(10*wsc,wyBase+14*wsc); ctx.lineTo(6*wsc,wyBase); ctx.fill();
+            // Boots
+            ctx.fillStyle = '#5D2E0C';
+            ctx.beginPath(); ctx.ellipse(-14*wsc,wyBase+16*wsc,8*wsc,5*wsc,0,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(14*wsc,wyBase+16*wsc,8*wsc,5*wsc,0,0,Math.PI*2); ctx.fill();
+            // Neck
+            ctx.fillStyle = '#f5d7a0';
+            ctx.beginPath(); ctx.ellipse(0,wyBase-52*wsc,7*wsc,8*wsc,0,0,Math.PI*2); ctx.fill();
+            // Head
+            ctx.beginPath(); ctx.ellipse(0,wyBase-68*wsc,14*wsc,16*wsc,0,0,Math.PI*2);
+            ctx.fillStyle = '#f5d7a0'; ctx.fill(); ctx.strokeStyle = '#c9a87c'; ctx.lineWidth = 0.8*wsc; ctx.stroke();
+            // Face
+            ctx.strokeStyle = '#8B4513'; ctx.lineWidth = 1.5*wsc;
+            ctx.beginPath(); ctx.arc(0,wyBase-65*wsc,6*wsc,0.2,Math.PI-0.2); ctx.stroke();
+            ctx.fillStyle = '#1a0a00';
+            ctx.beginPath(); ctx.arc(-5*wsc,wyBase-72*wsc,2*wsc,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(5*wsc,wyBase-72*wsc,2*wsc,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(-5.4*wsc,wyBase-72.4*wsc,0.8*wsc,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(5.4*wsc,wyBase-72.4*wsc,0.8*wsc,0,Math.PI*2); ctx.fill();
+            ctx.strokeStyle = '#8B4513'; ctx.lineWidth = 1.2*wsc;
+            ctx.beginPath(); ctx.moveTo(-8*wsc,wyBase-76*wsc); ctx.lineTo(-2*wsc,wyBase-77*wsc); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(2*wsc,wyBase-77*wsc); ctx.lineTo(8*wsc,wyBase-76*wsc); ctx.stroke();
+            // Ears
+            ctx.fillStyle = '#f5d7a0';
+            ctx.beginPath(); ctx.ellipse(-13*wsc,wyBase-68*wsc,4*wsc,5*wsc,-0.3,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(13*wsc,wyBase-68*wsc,4*wsc,5*wsc,0.3,0,Math.PI*2); ctx.fill();
+            // Hair tuft
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath(); ctx.moveTo(-10*wsc,wyBase-82*wsc); ctx.quadraticCurveTo(-6*wsc,wyBase-88*wsc,0,wyBase-87*wsc); ctx.quadraticCurveTo(6*wsc,wyBase-88*wsc,10*wsc,wyBase-82*wsc); ctx.fill();
+            // Sheriff badge
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            for (let pt=0;pt<6;pt++){const a=(pt/6)*Math.PI*2-Math.PI/2;const r=pt%2===0?5*wsc:2.5*wsc;if(pt===0)ctx.moveTo(Math.cos(a)*r,wyBase-38*wsc+Math.sin(a)*r);else ctx.lineTo(Math.cos(a)*r,wyBase-38*wsc+Math.sin(a)*r);}
+            ctx.closePath(); ctx.fill(); ctx.strokeStyle='#b8860b'; ctx.lineWidth=0.8*wsc; ctx.stroke();
+            // Cowboy hat
+            const hatY = wyBase-86*wsc;
+            ctx.beginPath(); ctx.ellipse(0,hatY,22*wsc,5*wsc,0,0,Math.PI*2);
+            ctx.fillStyle = '#8B4513'; ctx.fill(); ctx.strokeStyle='#5D2E0C'; ctx.lineWidth=0.8*wsc; ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-14*wsc,hatY); ctx.lineTo(-12*wsc,hatY-22*wsc); ctx.quadraticCurveTo(-8*wsc,hatY-26*wsc,0,hatY-26*wsc); ctx.quadraticCurveTo(8*wsc,hatY-26*wsc,12*wsc,hatY-22*wsc); ctx.lineTo(14*wsc,hatY);
+            ctx.fillStyle = '#8B4513'; ctx.fill(); ctx.strokeStyle='#5D2E0C'; ctx.lineWidth=0.8*wsc; ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-14*wsc,hatY); ctx.lineTo(-13*wsc,hatY-5*wsc); ctx.lineTo(13*wsc,hatY-5*wsc); ctx.lineTo(14*wsc,hatY);
+            ctx.fillStyle='#f5c518'; ctx.fill();
+            ctx.restore(); // Woody
+            ctx.restore(); // whole translate
+        }
+
+        // ── Buzz Lightyear floating ──
+        let buzzX, buzzY, buzzAngle = 0, buzzBob = 0, buzzDrift = 0, buzzVx, buzzVy;
+        function initBuzz() {
+            buzzX = canvas.width * (0.15 + Math.random() * 0.7);
+            buzzY = canvas.height * (0.08 + Math.random() * 0.45);
+            buzzVx = (Math.random() - 0.5) * 0.6;
+            buzzVy = (Math.random() - 0.5) * 0.3;
+        }
+        initBuzz();
+
+        function drawBuzz(x, y, bob, angle) {
+            const H = canvas.height;
+            const sc = H * 0.0024;
+            const by = y + Math.sin(bob) * 10;
+            ctx.save(); ctx.translate(x, by);
+            ctx.rotate(Math.sin(angle * 0.4) * 0.06);
+            // Thruster glow
+            const thrustGlow = ctx.createRadialGradient(0,30*sc,0,0,30*sc,40*sc);
+            thrustGlow.addColorStop(0,'rgba(100,200,255,0.5)'); thrustGlow.addColorStop(1,'rgba(100,200,255,0)');
+            ctx.beginPath(); ctx.arc(0,30*sc,40*sc,0,Math.PI*2); ctx.fillStyle=thrustGlow; ctx.fill();
+            // Wing left
+            ctx.save(); ctx.rotate(-0.3);
+            ctx.beginPath(); ctx.moveTo(-10*sc,-10*sc); ctx.lineTo(-55*sc,-40*sc); ctx.lineTo(-50*sc,-10*sc); ctx.lineTo(-18*sc,5*sc);
+            ctx.fillStyle='#6aafe6'; ctx.fill(); ctx.strokeStyle='#2c5f8a'; ctx.lineWidth=1*sc; ctx.stroke();
+            ctx.restore();
+            // Wing right
+            ctx.save(); ctx.rotate(0.3);
+            ctx.beginPath(); ctx.moveTo(10*sc,-10*sc); ctx.lineTo(55*sc,-40*sc); ctx.lineTo(50*sc,-10*sc); ctx.lineTo(18*sc,5*sc);
+            ctx.fillStyle='#6aafe6'; ctx.fill(); ctx.strokeStyle='#2c5f8a'; ctx.lineWidth=1*sc; ctx.stroke();
+            ctx.restore();
+            // Body
+            ctx.beginPath(); ctx.moveTo(-20*sc,30*sc); ctx.lineTo(-22*sc,-20*sc); ctx.quadraticCurveTo(-22*sc,-35*sc,0,-38*sc); ctx.quadraticCurveTo(22*sc,-35*sc,22*sc,-20*sc); ctx.lineTo(20*sc,30*sc); ctx.quadraticCurveTo(16*sc,38*sc,0,38*sc); ctx.quadraticCurveTo(-16*sc,38*sc,-20*sc,30*sc);
+            ctx.fillStyle='#f0f0f0'; ctx.fill(); ctx.strokeStyle='#999'; ctx.lineWidth=1*sc; ctx.stroke();
+            // Purple chest plate
+            ctx.beginPath(); ctx.moveTo(-16*sc,-5*sc); ctx.lineTo(-18*sc,15*sc); ctx.lineTo(18*sc,15*sc); ctx.lineTo(16*sc,-5*sc); ctx.quadraticCurveTo(0,-12*sc,-16*sc,-5*sc);
+            ctx.fillStyle='#6a1fb5'; ctx.fill();
+            // Chest dome
+            ctx.beginPath(); ctx.arc(0,5*sc,10*sc,0,Math.PI*2);
+            ctx.fillStyle='#a8d8f0'; ctx.fill(); ctx.strokeStyle='#6aafe6'; ctx.lineWidth=1.2*sc; ctx.stroke();
+            ctx.beginPath(); ctx.arc(0,5*sc,4*sc,0,Math.PI*2); ctx.fillStyle='#ff4136'; ctx.fill();
+            // Green collar
+            ctx.beginPath(); ctx.moveTo(-22*sc,-20*sc); ctx.quadraticCurveTo(-22*sc,-28*sc,-14*sc,-30*sc); ctx.lineTo(14*sc,-30*sc); ctx.quadraticCurveTo(22*sc,-28*sc,22*sc,-20*sc); ctx.lineTo(14*sc,-22*sc); ctx.lineTo(-14*sc,-22*sc);
+            ctx.fillStyle='#4caf50'; ctx.fill();
+            // Helmet
+            ctx.beginPath(); ctx.ellipse(0,-52*sc,20*sc,22*sc,0,0,Math.PI*2);
+            ctx.fillStyle='#e8e8e8'; ctx.fill(); ctx.strokeStyle='#999'; ctx.lineWidth=1*sc; ctx.stroke();
+            // Visor
+            ctx.beginPath(); ctx.ellipse(0,-52*sc,14*sc,13*sc,0,0,Math.PI*2);
+            const visor=ctx.createRadialGradient(-4*sc,-57*sc,1*sc,0,-52*sc,14*sc);
+            visor.addColorStop(0,'rgba(180,230,255,0.9)'); visor.addColorStop(0.6,'rgba(80,180,230,0.7)'); visor.addColorStop(1,'rgba(20,100,180,0.5)');
+            ctx.fillStyle=visor; ctx.fill();
+            ctx.beginPath(); ctx.ellipse(-5*sc,-59*sc,5*sc,3*sc,-0.5,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.fill();
+            // Purple jaw
+            ctx.beginPath(); ctx.moveTo(-12*sc,-42*sc); ctx.lineTo(-10*sc,-35*sc); ctx.lineTo(10*sc,-35*sc); ctx.lineTo(12*sc,-42*sc);
+            ctx.fillStyle='#6a1fb5'; ctx.fill();
+            // Arms
+            ctx.fillStyle='#f0f0f0'; ctx.strokeStyle='#999'; ctx.lineWidth=0.8*sc;
+            ctx.beginPath(); ctx.moveTo(-22*sc,-18*sc); ctx.quadraticCurveTo(-32*sc,-5*sc,-28*sc,15*sc); ctx.lineTo(-22*sc,15*sc); ctx.lineTo(-18*sc,-18*sc); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(22*sc,-18*sc); ctx.quadraticCurveTo(32*sc,-5*sc,28*sc,15*sc); ctx.lineTo(22*sc,15*sc); ctx.lineTo(18*sc,-18*sc); ctx.fill(); ctx.stroke();
+            // Gloves
+            ctx.fillStyle='#6a1fb5';
+            ctx.beginPath(); ctx.ellipse(-25*sc,18*sc,7*sc,5*sc,0,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(25*sc,18*sc,7*sc,5*sc,0,0,Math.PI*2); ctx.fill();
+            // Legs
+            ctx.fillStyle='#f0f0f0'; ctx.strokeStyle='#999'; ctx.lineWidth=0.8*sc;
+            ctx.beginPath(); ctx.roundRect(-16*sc,30*sc,12*sc,22*sc,3*sc); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.roundRect(4*sc,30*sc,12*sc,22*sc,3*sc); ctx.fill(); ctx.stroke();
+            // Boots
+            ctx.fillStyle='#6a1fb5';
+            ctx.beginPath(); ctx.ellipse(-10*sc,54*sc,10*sc,6*sc,0,0,Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(10*sc,54*sc,10*sc,6*sc,0,0,Math.PI*2); ctx.fill();
+            // Star logo
+            ctx.fillStyle='#ffd700'; ctx.save(); ctx.translate(0,-18*sc);
+            ctx.beginPath();
+            for(let pt=0;pt<5;pt++){const a=(pt/5)*Math.PI*2-Math.PI/2;const r2=pt%2===0?4*sc:2*sc;if(pt===0)ctx.moveTo(Math.cos(a)*r2,Math.sin(a)*r2);else ctx.lineTo(Math.cos(a)*r2,Math.sin(a)*r2);}
+            ctx.closePath(); ctx.fill(); ctx.restore();
+            ctx.restore(); // buzz
+        }
+
+        // ── Animation loop ──
+        let t = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            t++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawToyStorySky();
+            drawSun();
+            clouds.forEach(c => {
+                drawCloud(c.x, c.y, c.scale, c.opacity);
+                c.x -= c.speed;
+                if (c.x < -250) Object.assign(c, makeCloud(canvas.width + 200));
+            });
+            horseGait += 0.18;
+            horseX += horseSpeed;
+            if (horseX > canvas.width + 250) horseX = -220;
+            drawWoodyOnHorse(horseX, horseGait);
+            buzzBob += 0.025; buzzAngle += 0.016; buzzDrift += 0.008;
+            buzzX += buzzVx + Math.sin(buzzDrift) * 0.4;
+            buzzY += buzzVy + Math.cos(buzzDrift * 0.7) * 0.15;
+            if (buzzX < 60 || buzzX > canvas.width - 60) buzzVx *= -1;
+            if (buzzY < 30 || buzzY > canvas.height * 0.70) buzzVy *= -1;
+            drawBuzz(buzzX, buzzY, buzzBob, buzzAngle);
+        }
+        animate();
+    })();
     </script>
 </body>
-</html>
